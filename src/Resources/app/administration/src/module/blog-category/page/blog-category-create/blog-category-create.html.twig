@@ -1,0 +1,37 @@
+{% block blog_category_list %}
+
+<sw-page class="blog-category-create">
+
+    {% block blog_category_smart_bar_actions %}
+        <template #smart-bar-actions>
+            <sw-button
+                variant="primary"
+                @click="onSave"
+                > + Save
+            </sw-button>
+        </template>
+    {% endblock %}
+
+    <template #content> 
+
+        <sw-card title="New Todo">
+
+            <sw-text-field v-model:value="item.name" label="Title"></sw-text-field>
+            
+            <sw-textarea-field v-model:value="item.description" label="Description"></sw-textarea-field>
+            
+            <sw-media-field
+                label="Select Media"
+                v-model:value="item.mediaId"
+                :allowMultiSelect="false"
+            />
+
+            <sw-switch-field v-model:value="item.active" label="Active"></sw-switch-field>
+
+        </sw-card>
+
+    </template>
+        
+</sw-page>
+
+{% endblock %}

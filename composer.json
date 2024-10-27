@@ -1,0 +1,27 @@
+{
+    "name": "gdn/gdn-blog",
+    "description": "Gdn Blog Module",
+    "type": "shopware-platform-plugin",
+    "version": "1.1.1",
+    "license": "MIT",
+    "require": {
+        "shopware/core": "~6.6.0"
+    },
+    "extra": {
+        "shopware-plugin-class": "Gdn\\GdnBlog\\GdnBlog",
+        "label": {
+            "de-DE": "Gdn Blog Module",
+            "en-GB": "Gdn Blog Module"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Gdn\\GdnBlog\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Gdn\\GdnBlog\\Tests\\": "tests/"
+        }
+    }
+}

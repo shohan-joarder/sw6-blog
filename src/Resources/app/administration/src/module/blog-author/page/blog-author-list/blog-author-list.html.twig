@@ -1,0 +1,29 @@
+{% block blog_author_list %}
+
+<sw-page class="blog-author-list">
+
+    {% block blog_author_list_smart_bar_actions %}
+        <template #smart-bar-actions>
+            <sw-button
+                variant="primary"
+                :routerLink="{ name: 'blog.author.create' }"
+                > + New Author
+            </sw-button>
+        </template>
+    {% endblock %}
+
+    <template #content>
+        <sw-data-grid
+            :dataSource="items"
+            :columns="columns">
+
+            <template #actions="{ item }">
+                <sw-context-menu-item @click="onEditTask(item)">Edit</sw-context-menu-item>
+                <sw-context-menu-item @click="onDeleteTask(item)">Delete</sw-context-menu-item>
+            </template>
+        </sw-data-grid>
+    </template>
+        
+</sw-page>
+
+{% endblock %}

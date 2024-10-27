@@ -1,0 +1,26 @@
+{
+    "blog-author":{
+        "general":{
+            "title":"Blog Author",
+            "description":"Blog Author Details",
+            "new":"Add New",
+            "save":"Save"
+        }
+    },
+    "blog-category":{
+        "general":{
+            "title":"Blog Category",
+            "description":"Blog Category Details",
+            "new":"Add New",
+            "save":"Save"
+        }
+    },
+    "blog-post":{
+        "general":{
+            "title":"Blog ",
+            "description":"Blog Details",
+            "new":"Add New",
+            "save":"Save"
+        }
+    }
+}
