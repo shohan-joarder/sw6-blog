@@ -4,21 +4,44 @@
 
     {% block blog_author_list_smart_bar_actions %}
         <template #smart-bar-actions>
+
+            <sw-button 
+                :disabled="true" 
+                :square="false" 
+                :block="false"  
+                variant="primary" 
+                :isLoading="true" 
+                v-if="loading"
+                >
+                Processing...
+            </sw-button>
+
             <sw-button
+                v-else
                 variant="primary"
                 @click="onSave"
-                > + Save
+                >
+                <span v-if="item.id">{{ $tc('global.default.update') }}</span>
+                <span v-else>{{ $tc('global.default.save') }}</span>
             </sw-button>
         </template>
     {% endblock %}
 
     <template #content> 
 
-        <sw-card title="New Todo">
+        <sw-card :title="cardTitle">
 
-            <sw-text-field v-model:value="item.name" label="Title"></sw-text-field>
+            <sw-text-field 
+                v-model:value="item.name" 
+                :required="true" 
+                :error="errors.name"
+                label="Name" 
+            />
             
-            <sw-textarea-field v-model:value="item.description" label="Description"></sw-textarea-field>
+            <sw-textarea-field 
+                v-model:value="item.description" 
+                label="Description"
+            />
             
             <sw-media-field
                 label="Select Media"

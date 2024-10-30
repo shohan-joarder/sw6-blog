@@ -2,26 +2,48 @@
 
 <sw-page class="blog-category-list">
 
-    {% block blog_category_smart_bar_actions %}
+    {% block blog_author_list_smart_bar_actions %}
         <template #smart-bar-actions>
             <sw-button
                 variant="primary"
-                :routerLink="{ name: 'blog.category.create' }"
-                > + New Author
+                :routerLink="{ name: 'blog.category.create' }">
+                {{ $tc('global.default.new') }}
             </sw-button>
         </template>
     {% endblock %}
 
     <template #content>
-        <sw-data-grid
-            :dataSource="items"
-            :columns="columns">
 
-            <template #actions="{ item }">
-                <sw-context-menu-item @click="onEditTask(item)">Edit</sw-context-menu-item>
-                <sw-context-menu-item @click="onDeleteTask(item)">Delete</sw-context-menu-item>
-            </template>
-        </sw-data-grid>
+        <div class="item_row">
+
+            <div class="side_nav">
+                <ul>
+                    <li><a class="link" href="#/blog/post/list">Blog</a></li>
+                    <li><a class="link" href="#/blog/author/list">Autor</a></li>
+                    <li><a class="activeLink" href="#/blog/category/list">Category</a></li>
+                </ul>
+            </div>
+            <div class="col-10">
+                <sw-data-grid
+                    :dataSource="items"
+                    :columns="columns"
+                    :showSelection="false"
+                    >
+
+                    <template #actions="{ item }">
+                        <sw-context-menu-item @click="onEditItem(item)">Edit</sw-context-menu-item>
+                        <sw-context-menu-item @click="onDeleteItem(item)">Delete</sw-context-menu-item>
+                    </template>
+                </sw-data-grid>
+                <!-- Pagination Controls -->
+                <sw-pagination
+                    :currentPage="page"
+                    :total="total"
+                    :limit="limit"
+                    @page-change="onPageChange"
+                />
+            </div>
+        </div>
     </template>
         
 </sw-page>

@@ -1,4 +1,5 @@
 import template from  "./blog-author-list.html.twig"
+import "./../../../../module/gdn_blog.scss"
 
 const { Component, Mixin } = Shopware;
 
@@ -24,27 +25,19 @@ Component.register('blog-author-list', {
             naturalSorting: false,
             columns: [
                 { property: 'name', label: 'Title' },
-                { property: 'description', label: 'Description' },
-                { property: 'active', label: 'Status' }
+                { property: 'description', label: 'Description' }
             ],
-            repository:"gdn_blog_author"
+            entity:"gdn_blog_author"
         };
-    },
-    created() {
-        this.loadItems();
     },
     methods: {
         loadItems() {
 
             const criteria = new Criteria(this.page, this.limit);
             criteria.addSorting(Criteria.sort(this.sortBy, this.sortDirection, this.naturalSorting));
-            criteria.addAssociation('media');
-
-            this.repository = this.repositoryFactory.create(this.repository);
+            
+            this.repository = this.repositoryFactory.create(this.entity);
             this.repository.search(criteria).then((result) => {
-                console.log("author called")
-                console.log(result);
-                console.log("author called")
                 this.items = result;
                 this.total = result.total;
             })
@@ -53,6 +46,54 @@ Component.register('blog-author-list', {
         onEditItem(item){
             const id = item.id;
             this.$router.push({ name: 'blog.author.create', params: {id}  });
+        },
+        onPageChange(newPage) {
+            const {page,limit} = newPage;
+            this.limit = limit;
+            this.page = page;
+            this.loadItems();
+        },
+        async onDeleteItem(item) {
+            let itemId = item.id
+            if (!itemId) {
+                console.error("Item ID is undefined or null.");
+                return;
+            }
+    
+            try {
+                const repository = this.repositoryFactory.create(this.entity);
+                if (!repository) {
+                    console.error("Repository for 'blog_post' could not be created.");
+                    return;
+                }
+    
+                // Attempt to delete the item
+                await repository.delete(itemId, Shopware.Context.api);
+    
+                // Notify success
+                this.createNotificationSuccess({
+                    title: "Success",
+                    message: "Item deleted successfully"
+                });
+    
+                // Refresh the list after deletion
+                this.loadItems();
+            } catch (error) {
+                // Enhanced error logging
+                console.error("Error deleting item:", error.message || error);
+    
+                // Display error notification
+                this.createNotificationError({
+                    title: "Error",
+                    message: "Something went wrong, Please try again later"
+                });
+            }
         }
+    },
+    created() {
+        this.loadItems();
+    },
+    itemRepository() {
+        return this.repositoryFactory.create(this.entity);
     }
 })

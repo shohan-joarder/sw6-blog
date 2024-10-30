@@ -1,5 +1,10 @@
 import template from  "./blog-post-list.html.twig"
 
+import deDE from './../../../../snippet/de-DE.json';
+import enGB from './../../../../snippet/en-GB.json';
+
+import "./../../../../module/gdn_blog.scss"
+
 const { Component, Mixin } = Shopware;
 
 const { Criteria } = Shopware.Data;
@@ -11,7 +16,10 @@ Component.register('blog-post-list', {
     mixins: [
         Mixin.getByName('notification')
     ],
-
+    snippets: {
+        'de-DE': deDE,
+        'en-GB': enGB
+    },
     inject: ['repositoryFactory'],
     data() {
         return {
@@ -23,36 +31,90 @@ Component.register('blog-post-list', {
             sortDirection: 'DESC',
             naturalSorting: false,
             columns: [
-                { property: 'name', label: 'Title' },
-                { property: 'description', label: 'Description' },
-                { property: 'active', label: 'Status' }
+                { property: 'title', label: 'Title' },
+                { property: 'slug', label: 'Slug' },
+                { property: 'postAuthor.name', label: 'Author' },
+                { property: 'short_description', label: 'Short Description' },
+                { property: 'meta_title', label: 'Meta Title' },
             ],
-            repository:"gdn_blog_post"
+            entity:"gdn_blog_post"
         };
-    },
-    created() {
-        this.loadItems();
     },
     methods: {
         loadItems() {
 
             const criteria = new Criteria(this.page, this.limit);
             criteria.addSorting(Criteria.sort(this.sortBy, this.sortDirection, this.naturalSorting));
-            criteria.addAssociation('media');
+            criteria.addAssociation('postAuthor');
 
-            this.repository = this.repositoryFactory.create(this.repository);
+            this.repository = this.repositoryFactory.create(this.entity);
             this.repository.search(criteria).then((result) => {
-                console.log("post called")
-                console.log(result);
-                console.log("post called")
                 this.items = result;
                 this.total = result.total;
             })
 
         },
         onEditItem(item){
+            console.log(item);
             const id = item.id;
             this.$router.push({ name: 'blog.post.create', params: {id}  });
+        },
+
+        onPageChange(newPage) {
+            const {page,limit} = newPage;
+            this.limit = limit;
+            this.page = page;
+            this.loadItems();
+        },
+        async onDeleteItem(item) {
+            let itemId = item.id
+            if (!itemId) {
+                return;
+            }
+    
+            try {
+                const repository = this.repositoryFactory.create(this.entity);
+                if (!repository) {
+                    return;
+                }
+    
+                // Attempt to delete the item
+                await repository.delete(itemId, Shopware.Context.api);
+    
+                // Notify success
+                this.createNotificationSuccess({
+                    title: "Success",
+                    message: "Blog deleted successfully"
+                });
+    
+                // Refresh the list after deletion
+                this.loadItems();
+            } catch (error) {
+                // Enhanced error logging
+                // console.error("Error deleting item:", error.message || error);
+    
+                // Display error notification
+                this.createNotificationError({
+                    title: "Errir",
+                    message: "Something went wrong, please try again later"
+                });
+            }
         }
+    },
+    created() {
+        this.loadItems();
+    },
+    computed: {
+        mediaItems() {
+            // return this.items.map(item => {
+            //     return {
+            //         ...item,
+            //         mediaUrl: item.media ? item.media.url : null // Fallback for missing media
+            //     };
+            // });
+        }
+    },
+    itemRepository() {
+        return this.repositoryFactory.create(this.entity);
     }
 })

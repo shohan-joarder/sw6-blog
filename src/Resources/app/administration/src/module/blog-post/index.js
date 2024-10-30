@@ -7,8 +7,8 @@ const { Module } = Shopware;
 Module.register('blog-post', {
     type: 'plugin',
     name: 'blog-post',
-    title: 'blog.post.list', // This refers to the translation key
-    description: 'blog.post.description', // This also refers to a translation key
+    title: 'blog-post.general.title', // This refers to the translation key
+    description: 'blog-post.general.description', // This also refers to a translation key
     color: '#ff3d58',
     entity: 'gdn_blog_post', // Ensure this matches your entity definition
 
@@ -19,7 +19,7 @@ Module.register('blog-post', {
         },
         create: {
             component: 'blog-post-create',
-            path: 'create',
+            path: 'create/:id?',
             meta: {
                 parentPath: 'blog.post.list'
             }
@@ -32,7 +32,6 @@ Module.register('blog-post', {
             label: 'blog-post.general.title',
             color: '#ff3d58',
             path: 'blog.post.list',
-            icon: 'default-shopping-paper-bag-product',
             parent: 'sw-content',
             position: 100
         }

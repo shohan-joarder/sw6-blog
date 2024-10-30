@@ -30,7 +30,7 @@ CREATE TABLE IF NOT EXISTS `gdn_blog_post` (
     `meta_keywords`     MEDIUMTEXT  NULL,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3),
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
 )
     ENGINE = InnoDB
     DEFAULT CHARSET = utf8mb4

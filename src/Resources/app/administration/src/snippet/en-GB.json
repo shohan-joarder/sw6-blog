@@ -1,26 +1,35 @@
 {
+    "global":{
+        "default":{
+            "success":"Success",
+            "save": "Save",
+            "update": "Update",
+            "deleteSuccess":"Deleted successfully",
+            "error":"Error",
+            "new":"+ Add New"
+        }
+    },
     "blog-author":{
         "general":{
             "title":"Blog Author",
-            "description":"Blog Author Details",
-            "new":"Add New",
-            "save":"Save"
+            "description":"Blog Author Details"
+        },
+        "list":{
+            "labelTitle":"Name",
+            "descriptionTitle":"Description",
+            "statusTitle":"Status"
         }
     },
     "blog-category":{
         "general":{
             "title":"Blog Category",
-            "description":"Blog Category Details",
-            "new":"Add New",
-            "save":"Save"
+            "description":"Blog Category Details"
         }
     },
     "blog-post":{
         "general":{
             "title":"Blog ",
-            "description":"Blog Details",
-            "new":"Add New",
-            "save":"Save"
+            "description":"Blog Details"
         }
     }
 }

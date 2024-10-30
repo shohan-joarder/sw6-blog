@@ -1,5 +1,7 @@
 import template from  "./blog-author-create.html.twig"
 
+import deDE from './../../../../snippet/de-DE.json';
+import enGB from './../../../../snippet/en-GB.json';
 
 const { Component, Mixin } = Shopware;
 
@@ -13,7 +15,10 @@ Component.register('blog-author-create', {
         Mixin.getByName('notification'),
         Mixin.getByName('placeholder')
     ],
-
+    snippets: {
+        'de-DE': deDE,
+        'en-GB': enGB
+    },
     inject: ['repositoryFactory','acl'],
 
     data() {
@@ -25,99 +30,114 @@ Component.register('blog-author-create', {
                 active: false,
                 mediaId:null
             },
+            errors:{
+                name:null
+            },
             toastTitle:"",
             toastMessage:"",
-            repository:"gdn_blog_author"
+            repository:"gdn_blog_author",
+            loading:false,
+
         };
-    },
-    created() {
-        // this.loadTask();
     },
     methods: {
         async loadItem() {
+
             // Retrieve the item using the repository and Criteria
             const itemId = this.item.id;
             const criteria = new Criteria();
             criteria.setIds([itemId]);
 
-            const repository = this.itemRepository();
+            const repository = this.itemRepository;
             
             repository.search(criteria).then((result) => {
-                console.log(result);
                 this.item = result[0];
             });
+
         },
         async onSave() {
-            console.log("save call")
+            this.loading = true;
+            const isValid = await this.validateRequiredFields();
+            if (!isValid) {
+                this.loading = false;
+                return; // Exit if validation fails
+            }
             // Update the item using repository
-            await this.updateTask();
-            // this.$router.push({ name: 'todo.list.list' });
-            console.log("save call 2")
+            await this.updateItem();
         },
-        async updateTask() {
-            console.log("update item call")
-            const repository = this.itemRepository(); //this.repositoryFactory.create(this.repository);
-            const newItem = repository.create();
-            
-            // newTask.id = this.item.id;
-            newItem.name = this.item.name;
-            newItem.description = this.item.description;
-            newItem.active = this.item.active;
-            newItem.mediaId = this.item.mediaId;
-
+        async updateItem() {
+            const repository = this.itemRepository;
+            const isUpdating = !!this.item.id;
+            const itemToSave = isUpdating ? await repository.get(this.item.id) : repository.create();
+        
+            // Set item properties
+            itemToSave.name = this.item.name;
+            itemToSave.description = this.item.description;
+            itemToSave.active = this.item.active;
+            itemToSave.mediaId = this.item.mediaId;
+        
             try {
-                // Update the item
-                if(this.item.id){
-                    await repository.get(this.item.id).then((item) => {
-                        if(item){
-                            item.name = this.item.name;
-                            item.description = this.item.description;
-                            item.active = this.item.active;
-                            item.mediaId = this.item.mediaId;
-                            repository.save(item).then(() => {
-                                this.toastTitle = "Success"
-                                this.toastMessage = "Author updated successfully"
-                            }).catch((error) => {
-                                this.toastTitle = "Error"
-                                this.toastMessage = 'Error updating item:', error
-                            });
-                        }
-                    })
-                }else{
-                    await repository.save(newItem);
-
-                    this.toastTitle = "Success"
-                    this.toastMessage = "Author addedd successfully"
-                }
-
-                this.createNotificationError({
-                    title: this.toastTitle,
-                    message: this.toastMessage,
+                // Attempt to save the item
+                const result = await repository.save(itemToSave, Shopware.Context.api);
+        
+                // Show success notification and redirect
+                this.createNotificationSuccess({
+                    title: "Success",
+                    message: isUpdating ? "Author updated successfully" : "Author created successfully",
                 });
-                
+        
+                // Redirect to list page after success notification
                 this.$router.push({ name: 'blog.author.list' });
+        
             } catch (error) {
-                console.error('Error updating item');
-                console.log(error)
-                console.error('Error updating item');
+        
+                // Show error notification if an error occurs
+                this.createNotificationError({
+                    title: "Error",
+                    message: "Error creating or updating author, please try again later",
+                });
+            } finally {
+                this.loading = false;
+            }
+        },
+        async validateRequiredFields() {
+            let isValid = true;
+
+            // Check if each required field is not empty
+            if (!this.item.name) {
+                this.errors.name = "Name is required";
+                isValid = false;
+            } else {
+                this.errors.name = null;
+            }
+
+            return isValid;
+        },
+        checkIfId(){
+            const itemId = this.$route.params.id
+
+            if(itemId){
+                
+                this.item.id = itemId;
+    
+                this.loadItem();
+    
             }
         }
     },
     computed: {
+
         itemRepository() {
             return this.repositoryFactory.create(this.repository);
         },
+
+        cardTitle() {
+            return this.item.id ? 'Update Author' : 'New Author';
+        }
     },
     mounted() {
 
-        const itemId = this.$route.params.id
+       this.checkIfId();
 
-        if(itemId){
-            
-            this.item.id = itemId;
-
-            this.loadItem();
-
-        }
     }
 });
