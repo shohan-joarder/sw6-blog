@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Gdn\GdnBlog\Core\Content\GdnBlogPost\GdnBlogPostDefinition;
 class GdnBlogCategoryDefinition extends EntityDefinition
@@ -38,8 +39,8 @@ class GdnBlogCategoryDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('name', 'name')),
             (new StringField('slug', 'slug')),
-            (new StringField('short_description', 'short_description')),
-            (new StringField('description', 'description')),
+            (new LongTextField('short_description', 'short_description')),
+            (new LongTextField('description', 'description')),
             (new BoolField('active', 'active')),
             (new StringField('meta_title', 'meta_title')),
             (new StringField('meta_description', 'meta_description')),

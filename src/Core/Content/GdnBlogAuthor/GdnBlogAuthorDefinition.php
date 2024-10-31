@@ -9,6 +9,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 
@@ -38,7 +39,7 @@ class GdnBlogAuthorDefinition extends EntityDefinition
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('name', 'name')),
-            (new StringField('description', 'description')),
+            (new LongTextField('description', 'description')),
             (new BoolField('active', 'active')),
             (new FkField('media_id', 'mediaId', MediaDefinition::class)),
             (new ManyToOneAssociationField('media', 'media_id', MediaDefinition::class, 'id', false))

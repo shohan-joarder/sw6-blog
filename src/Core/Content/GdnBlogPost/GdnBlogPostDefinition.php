@@ -10,6 +10,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateTimeField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
@@ -49,12 +50,12 @@ class GdnBlogPostDefinition extends EntityDefinition
             (new StringField('title', 'title')),
             (new StringField('slug', 'slug')),
             (new DateTimeField('published_at', 'publishedAt')),
-            (new StringField('short_description', 'shortDescription')),
-            (new StringField('description', 'description')),
+            (new LongTextField('short_description', 'shortDescription')),
+            (new LongTextField('description', 'description')),
             (new BoolField('active', 'active')),
             (new StringField('meta_title', 'meta_title')),
-            (new StringField('meta_description', 'meta_description')),
-            (new StringField('meta_keywords', 'meta_keywords')),
+            (new LongTextField('meta_description', 'meta_description')),
+            (new LongTextField('meta_keywords', 'meta_keywords')),
             (new JsonField('tags', 'tags')),
             (new JsonField('tags_name', 'tags_name')),
             (new FkField('media_id', 'mediaId', MediaDefinition::class)),
