@@ -1,0 +1,27 @@
+.d-flex{
+    display: flex;
+}
+
+.latest_blog_container{
+    padding: 10px;
+    gap: 10px;
+    width: 100%;
+}
+
+.card-details {
+    .d-flex {
+        justify-content: space-between;
+        p {
+            font-size: 8px;
+            font-weight: 800;
+        }
+    }
+    .blog-title{
+        font-size: 9px;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
+    .blog-short-description{
+        font-size: 11px;
+    }
+}

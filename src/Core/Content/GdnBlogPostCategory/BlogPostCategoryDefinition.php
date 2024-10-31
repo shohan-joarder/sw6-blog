@@ -10,13 +10,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\MappingEntityDefinition;
 
-// use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-// use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
-// use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
-// use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
-// use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
-// use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
-
 use Gdn\GdnBlog\Core\Content\GdnBlogPost\GdnBlogPostDefinition;
 use Gdn\GdnBlog\Core\Content\GdnBlogCategory\GdnBlogCategoryDefinition;
 

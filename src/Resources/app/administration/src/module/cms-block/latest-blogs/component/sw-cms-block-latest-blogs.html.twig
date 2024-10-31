@@ -1,0 +1,19 @@
+{% block sw_cms_block_latest_blogs %}
+    <div class="sw-cms-block-latest-blogs" v-if="items.length > 0">
+        <div class="blog-item" v-for="item in items" :key="item.id">
+            <div class="card">
+                <img :src="assetFilter('/administration/static/img/cms/preview_mountain_small.jpg')">
+                <div class="card-details">
+                    <div class="d-flex">
+                        <p>{{item.title}}</p>
+                        <p>{{item.content }}</p>
+                    </div>
+                    <h6 class="blog-title">{{item.title}}</h6>
+                    <p class="blog-short-description">{{item.content}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <p v-else>No latest blogs available at the moment.</p>
+{% endblock %}
+

@@ -1,0 +1,19 @@
+{% block sw_cms_preview_latest_blogs_preview %}
+    <div class="latest_blog_container d-flex">
+        {% for i in 0..2 %}
+            <div class="">
+                <div class="card">
+                    <img :src="assetFilter('/administration/static/img/cms/preview_mountain_small.jpg')">
+                    <div class="card-details">
+                        <div class="d-flex">
+                            <p>John Doe</p>
+                            <p>17 Oct,2024</p>
+                        </div>
+                        <h6 class="blog-title">What is Lorem Ipsum?</h6>
+                        <p class="blog-short-description">Lorem Ipsum is simply dummy text of the printing and typesetting industry.</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

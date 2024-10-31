@@ -68,17 +68,17 @@ class GdnBlogPostEntity extends Entity
 
     public function setShortDescription(?string $shortDescription): void
     {
-        $this->short_description = $shortDescription;
+        $this->shortDescription = $shortDescription;
     }
 
-    public function getPublishedAt(): ?string
+    public function getPublishedAt(): ?\DateTimeImmutable
     {
-        return $this->published_at;
+        return $this->publishedAt;
     }
 
-    public function setPublishedAt(?string $publishedAt): void
+    public function setPublishedAt( $publishedAt): void
     {
-        $this->published_at = $publishedAt;
+        $this->publishedAt = $publishedAt;
     }
 
     public function isActive(): bool

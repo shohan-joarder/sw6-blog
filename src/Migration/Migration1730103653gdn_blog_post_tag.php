@@ -20,7 +20,7 @@ class Migration1730103653gdn_blog_post_tag extends MigrationStep
     public function update(Connection $connection): void
     {
         $sql = <<<SQL
-            CREATE TABLE `gdn_blog_post_gdn_blog_category` (
+            CREATE TABLE IF NOT EXISTS `gdn_blog_post_gdn_blog_category` (
                 `blog_id` BINARY(16) NOT NULL,
                 `category_id` BINARY(16) NOT NULL,
                 PRIMARY KEY (`blog_id`, `category_id`),
@@ -30,6 +30,7 @@ class Migration1730103653gdn_blog_post_tag extends MigrationStep
         SQL;
 
         $connection->executeStatement($sql);
+
     }
 
     public function updateDestructive(Connection $connection): void

@@ -104,16 +104,6 @@ Component.register('blog-post-list', {
     created() {
         this.loadItems();
     },
-    computed: {
-        mediaItems() {
-            // return this.items.map(item => {
-            //     return {
-            //         ...item,
-            //         mediaUrl: item.media ? item.media.url : null // Fallback for missing media
-            //     };
-            // });
-        }
-    },
     itemRepository() {
         return this.repositoryFactory.create(this.entity);
     }

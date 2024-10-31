@@ -49,7 +49,7 @@ class GdnBlogPostDefinition extends EntityDefinition
             (new StringField('title', 'title')),
             (new StringField('slug', 'slug')),
             (new DateTimeField('published_at', 'publishedAt')),
-            (new StringField('short_description', 'short_description')),
+            (new StringField('short_description', 'shortDescription')),
             (new StringField('description', 'description')),
             (new BoolField('active', 'active')),
             (new StringField('meta_title', 'meta_title')),

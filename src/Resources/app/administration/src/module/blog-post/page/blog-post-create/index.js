@@ -29,7 +29,7 @@ Component.register('blog-post-create', {
                 id: null,
                 title: '',
                 slug: '',
-                short_description: '',
+                shortDescription: '',
                 description: '',
                 publishedAt:'',
                 active: false,
@@ -71,8 +71,7 @@ Component.register('blog-post-create', {
             
             repository.search(criteria).then((result) => {
                 this.item = result[0];
-
-                if (typeof result[0].tags === "object" && result[0].tags !== null) {
+                if (Object.keys(result[0].tags).length == 0 ) {
                     this.item.tags = [];
                 }
                 
@@ -109,7 +108,7 @@ Component.register('blog-post-create', {
             // Set item properties
             itemToSave.title = this.item.title;
             itemToSave.slug = this.item.slug;
-            itemToSave.short_description = this.item.short_description;
+            itemToSave.shortDescription = this.item.shortDescription;
             itemToSave.description = this.item.description;
             itemToSave.active = this.item.active;
             itemToSave.publishedAt = this.item.publishedAt;

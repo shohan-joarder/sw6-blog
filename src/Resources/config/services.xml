@@ -6,9 +6,16 @@
 
     <services>
 
-        <service id="Gdn\GdnBlog\Storefront\Controller\ExampleController" public="true">
+        <service id="Gdn\GdnBlog\Storefront\Controller\BlogController" public="true">
+                <argument id="gdn_blog_post.repository" type="service"/>
+                <argument id="gdn_blog_category.repository" type="service"/>
+                <argument id="gdn_blog_author.repository" type="service"/>
+
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
             </call>
         </service>
 

@@ -4,13 +4,58 @@
         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/shopware/trunk/src/Core/System/SystemConfig/Schema/config.xsd">
 
     <card>
-        <title>Minimal configuration</title>
 
-        <input-field type="text">
-            <name>textField</name>
-            <label>Test field with default value</label>
-            <defaultValue>test</defaultValue>
+        <title>Blog configuration</title>
+
+        <input-field type="int" >
+            <name>itemPerPage</name>
+            <label>Item Per Page</label>
+            <placeholder>Enter item per page</placeholder>
+            <defaultValue>8</defaultValue>
         </input-field>
+
+        <input-field type="text" >
+            <name>pagetitle</name>
+            <label>Page Title</label>
+            <placeholder>Enter title</placeholder>
+        </input-field>
+        
+        <input-field type="textarea" >
+            <name>shortDescription</name>
+            <label>Short Description</label>
+            <placeholder>Enter short description</placeholder>
+        </input-field>
+
+        <input-field type="textarea" >
+            <name>description</name>
+            <label>Description</label>
+            <placeholder>Enter Description</placeholder>
+        </input-field>
+
+        <component name="sw-media-field">
+            <name>Banner</name>
+            <label>Upload Banner Image</label>
+        </component>
+        
+         <input-field type="text" >
+            <name>metaTitle</name>
+            <label>Meta Title</label>
+            <placeholder>Enter meta title</placeholder>
+        </input-field>
+
+        <input-field type="textarea" >
+            <name>metaDescription</name>
+            <label>Meta Description</label>
+            <placeholder>Enter meta description</placeholder>
+        </input-field>
+        
+        <input-field type="textarea" >
+            <name>metaKeywards</name>
+            <label>Meta Keywards</label>
+            <placeholder>Enter meta keywards (seperate with , comma)</placeholder>
+        </input-field>
+
+
     </card>
 
 </config>
