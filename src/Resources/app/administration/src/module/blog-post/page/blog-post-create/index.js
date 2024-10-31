@@ -272,7 +272,7 @@ Component.register('blog-post-create', {
                 this.errors.slug = null;
             }
 
-            if (!this.item.short_description) {
+            if (!this.item.shortDescription) {
                 this.errors.short_description = "Short description is required";
                 isValid = false;
             } else {
