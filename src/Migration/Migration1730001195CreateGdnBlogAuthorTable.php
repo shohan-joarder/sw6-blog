@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS `gdn_blog_author` (
     `id` BINARY(16) NOT NULL,
     `media_id` BINARY(16) NULL,
     `name` VARCHAR(255) COLLATE utf8mb4_unicode_ci,
-    `description` MEDIUMTEXT NULL,
+    `description` LONGTEXT NULL,
     `active` TINYINT(1) COLLATE utf8mb4_unicode_ci,
     `created_at` DATETIME(3) NOT NULL,
     `updated_at` DATETIME(3),
