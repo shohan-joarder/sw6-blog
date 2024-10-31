@@ -34,7 +34,7 @@ Component.register('blog-post-list', {
                 { property: 'title', label: 'Title' },
                 { property: 'slug', label: 'Slug' },
                 { property: 'postAuthor.name', label: 'Author' },
-                { property: 'short_description', label: 'Short Description' },
+                { property: 'shortDescription', label: 'Short Description' },
                 { property: 'meta_title', label: 'Meta Title' },
             ],
             entity:"gdn_blog_post"

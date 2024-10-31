@@ -63,9 +63,7 @@ class BlogController extends StorefrontController
                 ];
             }
         }
-
-        // dd($blogEntities->getEntities());
-
+        
         // Prepare blog data
         $blogs = [];
         foreach ($blogEntities->getEntities() as $blog) {
