@@ -2,28 +2,40 @@
 
 namespace Gdn\GdnBlog\Storefront\Controller;
 
-use Shopware\Core\System\SalesChannel\SalesChannelContext;
-use Shopware\Storefront\Controller\StorefrontController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Shopware\Storefront\Page\GenericPageLoaderInterface;
+use Shopware\Storefront\Controller\StorefrontController;
+use Shopware\Core\System\SalesChannel\SalesChannelContext;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
+
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Symfony\Component\HttpFoundation\JsonResponse;
+
+use Shopware\Core\Content\Media\MediaService;
+
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class BlogController extends StorefrontController
 {
+    private GenericPageLoaderInterface $genericPageLoader;
+    private SystemConfigService $systemConfigService;
     private EntityRepository $blogRepository;
     private EntityRepository $categoryRepository;
     private EntityRepository $authorRepository;
+    private MediaService $mediaService;
 
-    public function __construct(EntityRepository $blogRepository,EntityRepository $categoryRepository,EntityRepository $authorRepository)
+    public function __construct(GenericPageLoaderInterface $genericPageLoader,SystemConfigService $systemConfigService,EntityRepository $blogRepository,EntityRepository $categoryRepository,EntityRepository $authorRepository,MediaService $mediaService)
     {
+        $this->genericPageLoader = $genericPageLoader;
+        $this->systemConfigService = $systemConfigService;
         $this->blogRepository = $blogRepository;
         $this->categoryRepository = $categoryRepository;
         $this->authorRepository = $authorRepository;
+        $this->mediaService = $mediaService;
     }
 
     #[Route(
@@ -33,6 +45,29 @@ class BlogController extends StorefrontController
     )]
     public function allBlogs(Request $request, SalesChannelContext $context): Response
     {
+        // dd($this->systemConfigService);
+
+        // $pluginConfig = $this->systemConfigService->get('GdnBlog.config.Banner');
+        // if (!$pluginConfig) {
+        //     return null;
+        // }
+    
+        // $criteria2 = new Criteria([$pluginConfig]);
+        // $banner = $this->mediaService->search($criteria2, $context)->first();
+
+        // dd($banner);
+
+        $pageTitle = $this->systemConfigService->get("GdnBlog.config.pagetitle");
+        $itemPerPage = $this->systemConfigService->get('GdnGdnBlog.config.itemPerPage');
+        $shortDescription = $this->systemConfigService->get('GdnBlog.config.shortDescription');
+        $description = $this->systemConfigService->get('GdnBlog.config.description');
+
+        $metaTitle = $this->systemConfigService->get('GdnGdnBlog.config.metaTitle');
+        $metaDescription = $this->systemConfigService->get('GdnGdnBlog.config.metaDescription');
+        $metaKeywards = $this->systemConfigService->get('GdnGdnBlog.config.metaKeywards');
+
+
+        $page = $this->genericPageLoader->load($request, $context,1);
         // Get page and limit from request parameters
         $page = (int) $request->query->get('page', 1); // Default to page 1
         $limit = (int) $request->query->get('limit', 12); // Default limit to 12
@@ -88,14 +123,25 @@ class BlogController extends StorefrontController
             ];
         }
 
-        // Return the results with unique categories and blog data
-        return new JsonResponse([
-            'blogs' => $blogs,
-            'uniqueCategories' => array_values($uniqueCategories),
-            'currentPage' => $page,
-            'totalBlogs' => $blogEntities->getTotal(),
-            'totalPages' => ceil($blogEntities->getTotal() / $limit), // Calculate total pages
+        return $this->renderStorefront('@GdnGdnblog/storefront/page/blogs.html.twig', [
+            'title' => $pageTitle,
+            'page' =>$page,
+            'blogs'=>$blogs,
+            'page_info'=>[
+                "shortDescription"=>$shortDescription,
+                "description"=>$description
+            ],
+            'categories'=>$uniqueCategories
         ]);
+
+        // Return the results with unique categories and blog data
+        // return new JsonResponse([
+        //     'blogs' => $blogs,
+        //     'uniqueCategories' => array_values($uniqueCategories),
+        //     'currentPage' => $page,
+        //     'totalBlogs' => $blogEntities->getTotal(),
+        //     'totalPages' => ceil($blogEntities->getTotal() / $limit), // Calculate total pages
+        // ]);
 
     }
 
