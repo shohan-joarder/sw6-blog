@@ -1,0 +1,43 @@
+<div class="gdn-blog-posts">
+    <div class="pages">
+        <ul class="items pages-items" aria-labelledby="paging-label">
+            {% set page = (app.request.get('page')|default(1)|format_number) %}
+            {% set pageNext = page == 0 ? 2 : page + 1 %}
+            {% set pagePrev = page - 1 %}
+            {% set pageKeys = paginationPages|keys %}
+
+            {# Previous Button #}
+            {% if pagePrev > 0 %}
+                <li class="item pages-item-previous">
+                    <a href="{{ app.request.uri ~ '?page=' ~ pagePrev }}" class="previous" aria-label="Previous">&lt; Previous</a>
+                </li>
+            {% endif %}
+
+            {# Display Page Links with Ellipsis #}
+            {% for loopIndex in 1..paginationPages|length %}
+                {% set currentPage = (app.request.get('page') is empty and loopIndex == 1) or (app.request.get('page') == loopIndex) ? 'current' : '' %}
+
+                {# Show first few pages, last few pages, and current/prev/next #}
+                {% if loopIndex <= 3 or loopIndex > paginationPages|length - 3 or (loopIndex == pagePrev) or (loopIndex == pageNext) %}
+                    <li class="item {{ currentPage }}">
+                        <a href="{{ app.request.uri ~ '?page=' ~ loopIndex }}" class="page">
+                            <span>{{ loopIndex }}</span>
+                        </a>
+                    </li>
+                {% elseif loopIndex == 4 or loopIndex == paginationPages|length - 4 %}
+                    <li class="item">
+                        <span>...</span> {# Show ellipsis #}
+                    </li>
+                {% endif %}
+            {% endfor %}
+
+            {# Next Button #}
+            {% if paginationPages and max(pageKeys) >= pageNext %}
+                <li class="item pages-item-next">
+                    <a href="{{ app.request.uri ~ '?page=' ~ pageNext }}" class="next" aria-label="Next">Next &gt;</a>
+                </li>
+            {% endif %}
+            
+        </ul>
+    </div>
+</div>

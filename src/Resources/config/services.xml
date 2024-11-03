@@ -13,7 +13,8 @@
                 <argument id="gdn_blog_category.repository" type="service"/>
                 <argument id="gdn_blog_author.repository" type="service"/>
                 <argument type="service" id="Shopware\Core\Content\Media\MediaService" />
-
+                <argument type="service" id="product.repository"/>
+                
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
             </call>
