@@ -15,13 +15,13 @@ use Shopware\Core\Content\Product\ProductRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter; 
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;  
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\InFilter; 
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotInFilter; 
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\InFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotInFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 
-use Shopware\Core\Framework\Context; 
+use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Shopware\Core\Content\Media\MediaService;
@@ -53,7 +53,7 @@ class BlogController extends StorefrontController
     }
 
     #[Route(
-        path: '/blogs/{category?}', 
+        path: '/blogs/{category?}',
         name: 'frontend.blog',
         methods: ['GET']
     )]
@@ -105,7 +105,7 @@ class BlogController extends StorefrontController
             $metaKeywards = $getCategoryData->getMetaKeywords();
 
         }
-        
+
         // meta info
         $metaTitle && $meta->setMetaTitle($metaTitle);
         $metaDescription && $meta->setMetaDescription($metaDescription);
@@ -126,7 +126,7 @@ class BlogController extends StorefrontController
         $criteria->addAssociation('postAuthor.media');
         $criteria->setLimit($itemPerPage);
         $criteria->setOffset($offset);
-        $criteria->addFilter(new EqualsFilter('active', true)); 
+        $criteria->addFilter(new EqualsFilter('active', true));
         // Get the current date
         $currentDate = (new \DateTime())->format('Y-m-d H:i:s'); // Current date and time
 
@@ -152,7 +152,7 @@ class BlogController extends StorefrontController
         if ($category) {
             $countCriteria->addFilter(new EqualsFilter('postCategories.slug', $category));
         }
-        
+
         // Fetch total count of matching blogs
         $totalBlogs = $this->blogRepository->search($countCriteria, $context->getContext())->getTotal();
 
@@ -164,7 +164,7 @@ class BlogController extends StorefrontController
         $categoryCriteria = new Criteria();
         $categoryCriteria->setLimit(100); // Adjust this limit if needed
         $categories = $this->categoryRepository->search($categoryCriteria, $context->getContext());
-        
+
         // Extract unique categories
         $uniqueCategories = [];
         foreach ($categories->getEntities() as $category) {
@@ -185,10 +185,10 @@ class BlogController extends StorefrontController
                 'title' => $blog->getTitle(),
                 'slug' => $blog->getSlug(),
                 'publishedAt' => $blog->getPublishedAt(),
-               'media' => $blog->media ? [
-                        'id' => $blog->media->getId(),
-                        'url' => $blog->media->getUrl(),
-                    ] : null,
+                'media' => $blog->media ? [
+                    'id' => $blog->media->getId(),
+                    'url' => $blog->media->getUrl(),
+                ] : null,
                 'short_description' => $blog->getShortDescription(),
                 'postAuthor' => [
                     'name' => $blog->postAuthor->getName(),
@@ -217,7 +217,7 @@ class BlogController extends StorefrontController
     }
 
     #[Route(
-        path: '/blog/{slug}', 
+        path: '/blog/{slug}',
         name: 'frontend.blog.details',
         methods: ['GET']
     )]
@@ -234,10 +234,10 @@ class BlogController extends StorefrontController
         $criteria->addAssociation('media'); // Fetch associated media
         $criteria->addAssociation('postAuthor.media'); // Fetch author media
         $criteria->addAssociation('postCategories'); // Fetch associated categories
-    
+
         // Fetch the blog entity based on the criteria
         $blogPost = $this->blogRepository->search($criteria, $context->getContext())->first();
-    
+
         // Check if the blog post exists
         if (!$blogPost) {
             return new Response('Blog post not found.', Response::HTTP_NOT_FOUND);
@@ -258,7 +258,7 @@ class BlogController extends StorefrontController
         $scheme = $request->isSecure() ? 'https://' : 'http://';
 
         $shopUrl =  $request->getHost();
-        $port = $request->getPort() != 80 ? $request->getPort() : ""; 
+        $port = $request->getPort() != 80 ? $request->getPort() : "";
         $appUrl = $scheme .$shopUrl."/" . $port;
 
         foreach ($blogPost->getTags() as $tag) {
@@ -287,7 +287,7 @@ class BlogController extends StorefrontController
 
         if (isset($relatedBlogs[$blogPost->getId()])) {
             unset($relatedBlogs[$blogPost->getId()]);
-        }     
+        }
 
         // Make table of content
         $description = $blogPost->getDescription();
@@ -300,12 +300,12 @@ class BlogController extends StorefrontController
             foreach ($elements as $element) {
                 $textContent = $element->textContent;
                 $id = $element->getAttribute('id') ?: str_replace(' ', '-', strtolower($textContent));
-                
+
                 // Add id to the element if it doesn't have one
                 if (!$element->getAttribute('id')) {
                     $element->setAttribute('id', $id);
                 }
-    
+
                 // Add this heading to the TOC array
                 $toc[] = [
                     'level' => $tag,
@@ -347,7 +347,7 @@ class BlogController extends StorefrontController
                 ];
             }, $blogPost->postCategories ->getElements()) : [],
 
-            "relatedProducts"=>$relatedProducts, 
+            "relatedProducts"=>$relatedProducts,
             "relatedBlogs"=>$relatedBlogs
         ];
 
@@ -359,12 +359,12 @@ class BlogController extends StorefrontController
             'page' => $pageInfo
         ]);
     }
-    
+
     private function getRelatedBlogsByCategory(string $categoryId, SalesChannelContext $salesChannelContext): array
     {
         $context = $salesChannelContext->getContext();
         $criteria = new Criteria();
-    
+
         // Add associations for categories and media
         $criteria->addAssociation('postCategories');
         $criteria->addAssociation('postAuthor.media');
@@ -383,13 +383,13 @@ class BlogController extends StorefrontController
 
         // Filter by the provided category ID
         $criteria->addFilter(new EqualsFilter('postCategories.id', $categoryId));
-    
+
         // Set a limit for the number of blogs retrieved
         $criteria->setLimit(5); // Limit to 5 related blogs
-    
+
         // Fetch the related blog posts from the repository
         $relatedBlogs = $this->blogRepository->search($criteria, $context);
-    
+
         // Map the related blog entities to the desired structure
         return $relatedBlogs->getEntities()->map(function ($blogPost) {
             return [
@@ -412,11 +412,11 @@ class BlogController extends StorefrontController
             ];
         });
     }
-    
+
 
     private function getProductsByTag(string $tagId, array $existingProductIds,SalesChannelContext $salesChannelContext,$appUrl): array
-    {   
-         // Retrieve the base Context from SalesChannelContext
+    {
+        // Retrieve the base Context from SalesChannelContext
         $context = $salesChannelContext->getContext();
 
         $criteria = new Criteria();
@@ -442,7 +442,7 @@ class BlogController extends StorefrontController
         // Log for debugging
         if ($productEntities->count() === 0) {
             // Log that no products were found
-            return false;
+            return [];
             // $this->logger->info('No products found for tag ID: ' . $tagId);
         }
 
@@ -471,6 +471,6 @@ class BlogController extends StorefrontController
         });
     }
 
-   
+
 
 }

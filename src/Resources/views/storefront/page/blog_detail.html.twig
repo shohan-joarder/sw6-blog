@@ -2,18 +2,21 @@
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 {% block base_content %}
     {% block page_header %}
-        <div class="bg-gray">
-            <div class="blockquote">
-                <h1 class="blog-page__title text-center">{{ blog.title }}</h1>
-                <div class="card-header d-flex justify-content-center align-items-center ">
-                    <p class="d-flex justify-content-center align-items-center">
+        <div class="blog_details_header_area">
+            <div class="inner_area">
+                <h2>
+                    {{ blog.title }}
+                </h2>
+                <div class="d-flex justify-content-center align-items-center flex-wrap gap-4 mt-2"
+                >
+                    <div class="user_area d-flex align-items-center flex-wrap gap-2">
                         {% if blog.postAuthor.media %}
-                            <img src="{{ blog.postAuthor.media.url }}" alt="{{ blog.postAuthor.name }}" /> &nbsp;
+                            <img src="{{ blog.postAuthor.media.url }}" alt="{{ blog.postAuthor.name }}" />
                         {% endif %}
-                        {{ blog.postAuthor.name }}
-                    </p>
-                    &nbsp;
-                    <p>{{ blog.publishedAt|date('F j, Y') }}</p>
+
+                        <h4>{{ blog.postAuthor.name }}</h4>
+                    </div>
+                    <h5 class="date">{{ blog.publishedAt|date('F j, Y') }}</h5>
                 </div>
             </div>
         </div>
@@ -21,64 +24,75 @@
 
     {% if blog.media %}
         {% block page_image %}
-            <div class="page-image mt-3">
-                <img src="{{ blog.media.url }}" alt="{{ blog.title }}" class="w-100"/>
+            <div class="blog_details_main_img">
+                <img src="{{ blog.media.url }}" alt="{{ blog.title }}" />
             </div>
         {% endblock %}
     {% endif %}
 
     {% block main_content %}
-        <div class="main-content mt-3">
-            <div class="row">
-                <div class="col-3">
-                    <h6 class=""> <u> Table of content </u></h6>
-                    <div id="">
-                        <ul>
-                            {% for heading in blog.toc %}
-                                <li class="toc-{{ heading.level }}">
-                                    <a href="#{{ heading.id }}">{{ heading.text }}</a>
-                                </li>
-                            {% endfor %}
-                        </ul>
+
+        <section class="details_content_wrapper">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="table_content_area">
+                            <h3 class="blog_details_title">Table of Content</h3>
+                            <ul class="table_list">
+{#                                class="active_list"#}
+                                {% for heading in blog.toc %}
+                                    <li class="toc-{{ heading.level }}">
+                                        <a href="#{{ heading.id }}">{{ heading.text }}</a>
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <div class="col-6" id="content">
-                    {{ blog.description|raw }}
-                </div>
-                <div class="col-3">
-                     {% if ( blog.categories | length >0)%}
-                    <div class="category">
-                        <h6 class=""><u> Categories </u></h6>
-                            {% for category in blog.categories %}
-                                <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ path('frontend.blog', {'category': category.slug}) }}" >{{ category.name }}</a>
-                            {% endfor %}
-                    </div>
-                    {% endif %}
-                    {% if ( blog.relatedProducts | length >0)%}
-                    <div class="relatedProduct">
-                        <h6 class=""><u> Related Product </u></h6>
-                            {% for product in blog.relatedProducts %}
-                            <a href="{{ product.url }}">
-                                <div class="card" >
-                                    <img class="card-img-top img-fluid." src="{{product.media}}" alt="{{product.name}}">
-                                    <div class="card-img-overlay">
-                                        <h4 class="card-title">{{product.name}}</h4>
+                    <div class="col-md-6"> <div id="content">
+                            {{ blog.description|raw }}
+                        </div> </div>
+                    <div class="col-md-3">
+                        <div class="details_right_area">
+                            {% if ( blog.categories | length >0)%}
+                                <div class="category">
+                                    <h3 class="blog_details_title">Categories</h3>
+                                    <div class="category_list d-flex align-items-center flex-wrap gap-2"
+                                    >
+{#                                        class="active"#}
+                                        {% for category in blog.categories %}
+                                            <a type="button"   href="{{ path('frontend.blog', {'category': category.slug}) }}" >{{ category.name }}</a>
+                                        {% endfor %}
+                                    </div>
+
+                                </div>
+                            {% endif %}
+                            {% if ( blog.relatedProducts | length >0)%}
+                                <div class="related_product_area">
+                                    <h3 class="blog_details_title">Related Products</h3>
+                                    <div class="related_product_grid">
+                                        {% for product in blog.relatedProducts %}
+                                            <a href="{{ product.url }}" class="related_product">
+                                                    <img class="product_img" src="{{product.media}}" alt="{{product.name}}">
+                                                        <h4  >{{product.name}}</h4>
+                                            </a>
+                                        {% endfor %}
                                     </div>
                                 </div>
-                            </a>
-                            {% endfor %}
+                            {% endif %}
+                        </div>
                     </div>
-                    {% endif %}
-
                 </div>
-            </div> 
-        </div>
+            </div>
+        </section>
+
+
+
     {% endblock %}
 
     {% if(blog.relatedBlogs|length >0) %}
     {% block related_article %}
-        <div class="related_article mt-3">
-            <h5>Related Article</h5>
+        <div class="related_article  mb-5">
+            <h5 class="blog_details_title">Related Article</h5>
             <div class="related-article-item row">
                 {% for relatedBlog in blog.relatedBlogs%}
                       {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
