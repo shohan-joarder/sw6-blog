@@ -592,7 +592,24 @@
     margin-bottom: 24px;
   }
 }
-.related_article .blog_details_title::after {
-  display: none;
+.related_article .related_details_title {
+  position: relative;
+  color: #212121;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .related_article .related_details_title {
+    transition: 0.5s;
+    font-size: 20px;
+  }
+}
+@media all and (max-width: 767px) {
+  .related_article .related_details_title {
+    transition: 0.5s;
+    font-size: 18px;
+  }
 }
 

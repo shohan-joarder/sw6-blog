@@ -91,8 +91,8 @@
 
     {% if(blog.relatedBlogs|length >0) %}
     {% block related_article %}
-        <div class="related_article  mb-5">
-            <h5 class="blog_details_title">Related Article</h5>
+        <div class="related_article ">
+            <h5 class="related_details_title">Related Article</h5>
             <div class="related-article-item row">
                 {% for relatedBlog in blog.relatedBlogs%}
                       {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
