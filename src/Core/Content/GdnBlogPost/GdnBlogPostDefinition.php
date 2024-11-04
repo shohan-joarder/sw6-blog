@@ -14,7 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateTimeField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
-
+use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\AllowHtml;
 
 use Gdn\GdnBlog\Core\Content\GdnBlogAuthor\GdnBlogAuthorDefinition;
 use Gdn\GdnBlog\Core\Content\GdnBlogCategory\GdnBlogCategoryDefinition;
@@ -51,7 +51,7 @@ class GdnBlogPostDefinition extends EntityDefinition
             (new StringField('slug', 'slug')),
             (new DateTimeField('published_at', 'publishedAt')),
             (new LongTextField('short_description', 'shortDescription')),
-            (new LongTextField('description', 'description')),
+            (new LongTextField('description', 'description'))->addFlags(new AllowHtml()),
             (new BoolField('active', 'active')),
             (new StringField('meta_title', 'meta_title')),
             (new LongTextField('meta_description', 'meta_description')),

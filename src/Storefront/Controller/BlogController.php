@@ -2,6 +2,7 @@
 
 namespace Gdn\GdnBlog\Storefront\Controller;
 
+use DOMDocument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -286,16 +287,45 @@ class BlogController extends StorefrontController
 
         if (isset($relatedBlogs[$blogPost->getId()])) {
             unset($relatedBlogs[$blogPost->getId()]);
-        }        
+        }     
+
+        // Make table of content
+        $description = $blogPost->getDescription();
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $description);
+        $toc = [];
+
+        foreach (['h2', 'h3'] as $tag) {
+            $elements = $dom->getElementsByTagName($tag);
+            foreach ($elements as $element) {
+                $textContent = $element->textContent;
+                $id = $element->getAttribute('id') ?: str_replace(' ', '-', strtolower($textContent));
+                
+                // Add id to the element if it doesn't have one
+                if (!$element->getAttribute('id')) {
+                    $element->setAttribute('id', $id);
+                }
+    
+                // Add this heading to the TOC array
+                $toc[] = [
+                    'level' => $tag,
+                    'text' => $textContent,
+                    'id' => $id
+                ];
+            }
+        }
+        $modifiedContent = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
+
 
         // Prepare the blog details data
         $blogDetails = [
             'id' => $blogPost->getId(),
             'title' => $blogPost->getTitle(),
+            'toc'=>$toc,
             'slug' => $blogPost->getSlug(),
             'publishedAt' => $blogPost->getPublishedAt(),
             'short_description' => $blogPost->getShortDescription(),
-            'description' => $blogPost->getDescription(),
+            'description' => $modifiedContent,//$blogPost->getDescription(),
             'tags'=>$blogPost->getTags(),
             'tagsName'=>$blogPost->getTagsName(),
             'media' => $blogPost->media ? [
