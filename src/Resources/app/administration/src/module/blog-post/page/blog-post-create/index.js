@@ -98,6 +98,9 @@ Component.register('blog-post-create', {
                 });
                 return;
             }
+
+            console.log(this.item.description)
+
             await this.updateItem();
         },
         async updateItem() {

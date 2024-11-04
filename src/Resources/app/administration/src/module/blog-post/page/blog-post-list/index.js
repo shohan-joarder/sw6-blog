@@ -31,11 +31,11 @@ Component.register('blog-post-list', {
             sortDirection: 'DESC',
             naturalSorting: false,
             columns: [
-                { property: 'title', label: 'Title' },
-                { property: 'slug', label: 'Slug' },
-                { property: 'postAuthor.name', label: 'Author' },
-                { property: 'shortDescription', label: 'Short Description' },
-                { property: 'meta_title', label: 'Meta Title' },
+                { property: 'title', label: 'Title', width: '200px' },
+                { property: 'slug', label: 'Slug', width: '150px' },
+                { property: 'postAuthor.name', label: 'Author', width: '100px' },
+                // { property: 'shortDescription', label: 'Short Description', width: '300px' },
+                { property: 'meta_title', label: 'Meta Title', width: '150px' },
             ],
             entity:"gdn_blog_post"
         };

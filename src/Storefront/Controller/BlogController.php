@@ -2,6 +2,7 @@
 
 namespace Gdn\GdnBlog\Storefront\Controller;
 
+use DOMDocument;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -37,8 +38,9 @@ class BlogController extends StorefrontController
     private EntityRepository $authorRepository;
     private MediaService $mediaService;
     private EntityRepository $productRepository;
+    private EntityRepository $mediaRepository;
 
-    public function __construct(GenericPageLoaderInterface $genericPageLoader,SystemConfigService $systemConfigService,EntityRepository $blogRepository,EntityRepository $categoryRepository,EntityRepository $authorRepository,MediaService $mediaService,EntityRepository $productRepository)
+    public function __construct(GenericPageLoaderInterface $genericPageLoader,SystemConfigService $systemConfigService,EntityRepository $blogRepository,EntityRepository $categoryRepository,EntityRepository $authorRepository,MediaService $mediaService,EntityRepository $productRepository,EntityRepository $mediaRepository)
     {
         $this->genericPageLoader = $genericPageLoader;
         $this->systemConfigService = $systemConfigService;
@@ -47,6 +49,7 @@ class BlogController extends StorefrontController
         $this->authorRepository = $authorRepository;
         $this->mediaService = $mediaService;
         $this->productRepository = $productRepository;
+        $this->mediaRepository = $mediaRepository;
     }
 
     #[Route(
@@ -64,13 +67,49 @@ class BlogController extends StorefrontController
 
         $metaTitle = $this->systemConfigService->get('GdnBlog.config.metaTitle');
         $metaDescription = $this->systemConfigService->get('GdnBlog.config.metaDescription');
-        $metaKeywords = $this->systemConfigService->get('GdnBlog.config.metaKeywords');
+        $metaKeywards = $this->systemConfigService->get('GdnBlog.config.metaKeywards');
 
-        $pageInfo =  $this->genericPageLoader->load($request, $context,1);
-        // $meta =  $pageInfo->getMetaInformation();
-        // $metaTitle && $pageInfo->setMetaTitle($metaTitle);
-        // $metaDescription && $pageInfo->setMetaDescription($metaDescription);
-        // $metaKeywards && $pageInfo->setMetaKeywords($metaKeywards);
+        $pageInfo =  $this->genericPageLoader->load($request, $context);
+        $meta =  $pageInfo->getMetaInformation();
+
+        $banner = null;
+
+        $mediaId = $this->systemConfigService->get('GdnBlog.config.Banner');
+
+        if ($mediaId) {
+            $mediaCriteria = new Criteria([$mediaId]);
+            $media = $this->mediaRepository->search($mediaCriteria, $context->getContext())->first();
+            if ($media) {
+                // Get the media URL
+                $banner = $media->getUrl();
+
+            }
+        }
+
+        if($category){
+            $findCategory = new Criteria();
+            $findCategory->addAssociation('media');
+            $findCategory->addFilter(new EqualsFilter('slug', $category));
+
+            $getCategoryData = $this->categoryRepository->search($findCategory, $context->getContext())->first();
+
+            // Redirect if no category data is found
+            if (!$getCategoryData) {
+                return $this->redirectToRoute('frontend.blog');
+            }
+            // dd($getCategoryData);
+            // Retrieve the banner URL if media is associated
+            $banner = $getCategoryData->media ? $getCategoryData->media->getUrl() : null;
+            $metaTitle = $getCategoryData->getMetaTitle();
+            $metaDescription = $getCategoryData->getMetaDescription();
+            $metaKeywards = $getCategoryData->getMetaKeywords();
+
+        }
+        
+        // meta info
+        $metaTitle && $meta->setMetaTitle($metaTitle);
+        $metaDescription && $meta->setMetaDescription($metaDescription);
+        $metaKeywards && $meta->setMetaKeywords($metaKeywards);
 
         // Get current page number from request parameters
         $page = (int) $request->query->get('page', 1); // Default to page 1
@@ -172,6 +211,8 @@ class BlogController extends StorefrontController
                 "description" => $description,
             ],
             'categories' => $uniqueCategories,
+            'banner'=>$banner,
+            'category_slug'=>$category
         ]);
     }
 
@@ -201,6 +242,15 @@ class BlogController extends StorefrontController
         if (!$blogPost) {
             return new Response('Blog post not found.', Response::HTTP_NOT_FOUND);
         }
+
+        // handle meta info
+        $meta =  $pageInfo->getMetaInformation();
+        $metaTitle = $blogPost->getMetaTitle();
+        $metaDescription = $blogPost->getMetaDescription();
+        $metaKeywards = $blogPost->getMetaKeywords();
+        $metaTitle && $meta->setMetaTitle($metaTitle);
+        $metaDescription && $meta->setMetaDescription($metaDescription);
+        $metaKeywards && $meta->setMetaKeywords($metaKeywards);
 
         $relatedProducts =[];
 
@@ -237,16 +287,45 @@ class BlogController extends StorefrontController
 
         if (isset($relatedBlogs[$blogPost->getId()])) {
             unset($relatedBlogs[$blogPost->getId()]);
-        }        
+        }     
+
+        // Make table of content
+        $description = $blogPost->getDescription();
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $description);
+        $toc = [];
+
+        foreach (['h2', 'h3'] as $tag) {
+            $elements = $dom->getElementsByTagName($tag);
+            foreach ($elements as $element) {
+                $textContent = $element->textContent;
+                $id = $element->getAttribute('id') ?: str_replace(' ', '-', strtolower($textContent));
+                
+                // Add id to the element if it doesn't have one
+                if (!$element->getAttribute('id')) {
+                    $element->setAttribute('id', $id);
+                }
+    
+                // Add this heading to the TOC array
+                $toc[] = [
+                    'level' => $tag,
+                    'text' => $textContent,
+                    'id' => $id
+                ];
+            }
+        }
+        $modifiedContent = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
+
 
         // Prepare the blog details data
         $blogDetails = [
             'id' => $blogPost->getId(),
             'title' => $blogPost->getTitle(),
+            'toc'=>$toc,
             'slug' => $blogPost->getSlug(),
             'publishedAt' => $blogPost->getPublishedAt(),
             'short_description' => $blogPost->getShortDescription(),
-            'description' => $blogPost->getDescription(),
+            'description' => $modifiedContent,//$blogPost->getDescription(),
             'tags'=>$blogPost->getTags(),
             'tagsName'=>$blogPost->getTagsName(),
             'media' => $blogPost->media ? [
@@ -363,7 +442,8 @@ class BlogController extends StorefrontController
         // Log for debugging
         if ($productEntities->count() === 0) {
             // Log that no products were found
-            $this->logger->info('No products found for tag ID: ' . $tagId);
+            return false;
+            // $this->logger->info('No products found for tag ID: ' . $tagId);
         }
 
         return $productEntities->map(function (ProductEntity $product) use ($salesChannelContext,$appUrl) {

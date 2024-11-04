@@ -5,14 +5,16 @@
     <h3 class="blog-page__title test text-center"> Blog Categories </h3>
 
     <div class="category-area text-center mb-3">
-        <a href="{{ path('frontend.blog')}}" type="button" class="btn btn-outline-secondary" >All</a>
+        <a href="{{ path('frontend.blog')}}" type="button" class="btn btn-outline-secondary {{ category_slug == null? 'active' : '' }}" >All</a>
         {% for category in categories %}
-            <a type="button" class="btn btn-sm btn-outline-secondary" href="{{ path('frontend.blog', {'category': category.slug}) }}" >{{ category.name }}</a>
+            <a type="button" class="btn btn-sm btn-outline-secondary {{ category.slug == category_slug ? 'active' : '' }}" href="{{ path('frontend.blog', {'category': category.slug}) }}" >{{ category.name }}</a>
         {% endfor %}
     </div>
     
     <div class="short_description bg-gray">
-        <img src="https://www.w3schools.com/howto/img_snow_wide.jpg" alt="Snow" />
+        {% if(banner) %}
+        <img src="{{banner}}" alt="Snow" />
+        {% endif %}
         <div class="centered">
             <h1 class="blog-page__title text-center text-light"> {{ title }} </h1>
             <p>{{page_info.shortDescription}}<p>
