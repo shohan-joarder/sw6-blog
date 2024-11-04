@@ -1,5 +1,18 @@
 .category-area a{
     min-width: 100px;
+  .btn{
+    color: #212121;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    border: 1px solid #D7D7D7 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 6px;
+  }
 }
 
 .short_description img{
@@ -74,4 +87,11 @@
     width: 100%;
     max-height: 350px;
     object-fit: fill;
+}
+.blog-page__title{
+  color: #212121;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
 }
