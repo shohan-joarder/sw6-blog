@@ -1,1 +1,1 @@
-(()=>{let e=document.getElementById("content").innerHTML,t=document.createElement("div");t.innerHTML=e;let n=t.querySelectorAll("h1, h2, h3, h4, h5, h6"),o=[];n.forEach(e=>{let t=e.textContent.toLowerCase().replace(/\s+/g,"-");e.setAttribute("id",t),o.push({text:e.textContent,id:t})});let l=document.getElementById("toc");l.innerHTML="",console.log(o),o.forEach(e=>{let t=document.createElement("a");t.href="#".concat(e.id),t.textContent=e.text,l.appendChild(t)})})();
+(()=>{})();
