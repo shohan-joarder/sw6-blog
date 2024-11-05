@@ -99,8 +99,6 @@ Component.register('blog-post-create', {
                 return;
             }
 
-            console.log(this.item.description)
-
             await this.updateItem();
         },
         async updateItem() {
@@ -137,7 +135,7 @@ Component.register('blog-post-create', {
                     // Update existing item
                     await repository.save(itemToSave, Shopware.Context.api);
                     this.createdId = this.item.id;
-                    // await this.manageCategoryBlog();
+                    await this.manageCategoryBlog();
                 } else {
                     // Create new item with predefined ID
                     const postId = Shopware.Utils.createId();
@@ -224,22 +222,52 @@ Component.register('blog-post-create', {
 
                 if(this.item.id){
 
-                    const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
+                    try {
+                        const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
+                        
+                        try {                        
+                            
+                            // Step 1: Create criteria to find records with the specified blog_id
+                            const criteria = new Shopware.Data.Criteria();
+                            criteria.addFilter(Shopware.Data.Criteria.equals('blogId', this.item.id));
+                            
+                        } catch (error) {
+                            console.log(error);
+                            console.log("loaging")
+                            return;
+                        }
 
-                    // Step 1: Create criteria to find records with the specified blog_id
-                    const criteria = new Shopware.Data.Criteria();
-                    criteria.addFilter(Shopware.Data.Criteria.equals('blogId', this.item.id));
-            
-                    // Step 2: Search for matching records
-                    const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
-            
-                    // Step 3: Delete each found record
-                    const deleteOperations = categoriesToDelete.map(category =>
-                        blogRepository.delete(category.id, Shopware.Context.api)
-                    );
-            
-                    // Execute all delete operations
-                    await Promise.all(deleteOperations);
+
+                        // Step 2: Search for matching records
+                        const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
+                        console.log(categoriesToDelete)
+                        console.log("Loging");
+                        return;
+                        if (!categoriesToDelete.total) {
+                            console.warn('No categories found to delete');
+                            return;
+                        }
+
+                        console.log(categoriesToDelete);
+                        // Step 3: Delete each found record
+                        const deleteOperations = categoriesToDelete.map(category => {
+                            // Ensure category.id exists before attempting to delete
+                            if (category.id) {
+                                return blogRepository.delete(category.id, Shopware.Context.api);
+                            } else {
+                                console.warn(`Category with no ID found:`, category);
+                                return Promise.resolve(); // Skip items with no ID
+                            }
+                        });
+
+                        // Execute all delete operations
+                        await Promise.all(deleteOperations);
+                        console.log("Categories successfully deleted");
+                    } catch (error) {
+                        console.log("Bulk delete error "+ error);
+                    }
+
+                    
 
                 }
 

@@ -442,7 +442,7 @@ class BlogController extends StorefrontController
         // Log for debugging
         if ($productEntities->count() === 0) {
             // Log that no products were found
-            return false;
+            return [];
             // $this->logger->info('No products found for tag ID: ' . $tagId);
         }
 

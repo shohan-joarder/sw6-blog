@@ -8,15 +8,18 @@ Shopware.Service('cmsService').registerCmsBlock({
     component: 'sw-cms-block-latest-blogs',
     previewComponent: 'sw-cms-preview-latest-blogs',
     configComponent: 'sw-cms-block-latest-blogs',
-    defaultConfig: {
-        numberOfPosts: {
-            source: 'static',
-            value: 5
+    config: {
+        selectedBlogs: {
+            source: "static",
+            value: null,
+            type: "entity",
+            entity: {
+                name: "gdn_blog_post",
+                labelProperty: "title",
+                valueProperty: "id",
+                multiple: true
+            }
         }
     },
-    slots: {
-        content: {
-            type: 'sw-cms-block-latest-blogs',
-        },
-    },
+    slots: []
 });
