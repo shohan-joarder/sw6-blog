@@ -31,7 +31,7 @@
 
                         <template #actions="{ item }">
                             <sw-context-menu-item @click="onEditItem(item)">Edit</sw-context-menu-item>
-                            <sw-context-menu-item @click="onDeleteItem(item)">Delete</sw-context-menu-item>
+                            <sw-context-menu-item @click="itemId = item.id; confirmModal = !confirmModal">Delete</sw-context-menu-item>
                         </template>
                     </sw-data-grid>
                     <!-- Pagination Controls -->
@@ -47,5 +47,15 @@
         </template>
         
 </sw-page>
+
+<sw-confirm-modal
+    v-if="confirmModal"
+    class="sw-my-component__confirm-delete-modal"
+    type="delete"
+    :text="'Are you sure you want to delete this?'"
+    @confirm="onDeleteItem()"
+    @close="confirmModal = !confirmModal"
+    @cancel="confirmModal = !confirmModal">
+</sw-confirm-modal>
 
 {% endblock %}

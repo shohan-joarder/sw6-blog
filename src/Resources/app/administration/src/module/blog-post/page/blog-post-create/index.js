@@ -5,7 +5,7 @@ import "./blog-post-create.scss"
 import deDE from './../../../../snippet/de-DE.json';
 import enGB from './../../../../snippet/en-GB.json';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin,Context } = Shopware;
 
 const { Criteria } = Shopware.Data;
 
@@ -217,59 +217,34 @@ Component.register('blog-post-create', {
             
             const categories = this.item.categoryIds
             if (categories) {
-
-
-
-                if(this.item.id){
-
-                    try {
-                        const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
+                const itemId = this.item.id;
+                // if(itemId){
+                    
+                //     try {
+                //         const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
                         
-                        try {                        
+                //         const criteria = new Criteria();
+                //         criteria.addFilter(Shopware.Data.Criteria.equals('blogId', itemId));
+                //         const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
+                //         console.log(categoriesToDelete);
+                //         return;
+                //         // try {               
+
+                //         //     await blogRepository.delete(itemId, Shopware.Context.api);
                             
-                            // Step 1: Create criteria to find records with the specified blog_id
-                            const criteria = new Shopware.Data.Criteria();
-                            criteria.addFilter(Shopware.Data.Criteria.equals('blogId', this.item.id));
-                            
-                        } catch (error) {
-                            console.log(error);
-                            console.log("loaging")
-                            return;
-                        }
+                //         // } catch (error) {
+                //         //     console.log(error);
+                //         //     console.log("loaging")
+                //         //     return;
+                //         // }
 
-
-                        // Step 2: Search for matching records
-                        const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
-                        console.log(categoriesToDelete)
-                        console.log("Loging");
-                        return;
-                        if (!categoriesToDelete.total) {
-                            console.warn('No categories found to delete');
-                            return;
-                        }
-
-                        console.log(categoriesToDelete);
-                        // Step 3: Delete each found record
-                        const deleteOperations = categoriesToDelete.map(category => {
-                            // Ensure category.id exists before attempting to delete
-                            if (category.id) {
-                                return blogRepository.delete(category.id, Shopware.Context.api);
-                            } else {
-                                console.warn(`Category with no ID found:`, category);
-                                return Promise.resolve(); // Skip items with no ID
-                            }
-                        });
-
-                        // Execute all delete operations
-                        await Promise.all(deleteOperations);
-                        console.log("Categories successfully deleted");
-                    } catch (error) {
-                        console.log("Bulk delete error "+ error);
-                    }
+                //     } catch (error) {
+                //         console.log("Bulk delete error "+ error);
+                //     }
 
                     
 
-                }
+                // }
 
                 for (const category of categories) {
                     const categoryBlogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
@@ -354,6 +329,26 @@ Component.register('blog-post-create', {
             this.loading = false;
         
             return result.total === 0; // Return true if no duplicates are found
+        },
+        generateSlug() {
+            const text = this.item.title;
+            let slug= text
+                .toString()
+                .toLowerCase() // Convert to lowercase
+                .trim() // Remove whitespace from both ends
+                .normalize('NFD') // Handle special characters like accents
+                .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+                .replace(/[^a-z0-9 ]/g, '') // Remove special characters
+                .replace(/\s+/g, '-') // Replace spaces with hyphens
+
+                this.item.slug = slug;
+        },
+    },
+    watch: {
+        'item.title': function(newName, oldName) {
+            if (oldName && newName !== oldName) {
+                this.generateSlug();
+            }
         }
     },
     computed: {

@@ -27,7 +27,9 @@ Component.register('blog-author-list', {
                 { property: 'name', label: 'Title' },
                 { property: 'description', label: 'Description' }
             ],
-            entity:"gdn_blog_author"
+            entity:"gdn_blog_author",
+            itemId:null,
+            confirmModal:false
         };
     },
     methods: {
@@ -53,8 +55,8 @@ Component.register('blog-author-list', {
             this.page = page;
             this.loadItems();
         },
-        async onDeleteItem(item) {
-            let itemId = item.id
+        async onDeleteItem() {
+            let itemId = this.itemId
             if (!itemId) {
                 console.error("Item ID is undefined or null.");
                 return;
@@ -69,7 +71,7 @@ Component.register('blog-author-list', {
     
                 // Attempt to delete the item
                 await repository.delete(itemId, Shopware.Context.api);
-    
+                this.confirmModal = false;
                 // Notify success
                 this.createNotificationSuccess({
                     title: "Success",

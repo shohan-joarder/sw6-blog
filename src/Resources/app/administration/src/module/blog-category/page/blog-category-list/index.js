@@ -27,10 +27,11 @@ Component.register('blog-category-list', {
             columns: [
                 { property: 'name', label: 'Title' },
                 { property: 'slug', label: 'Slug' },
-                { property: 'meta_title', label: 'Meta Title' },
-                { property: 'short_description', label: 'Short Description' }
+                { property: 'meta_title', label: 'Meta Title' }
             ],
-            entity:"gdn_blog_category"
+            entity:"gdn_blog_category",
+            categoryId:null,
+            confirmModal:false
         };
     },
     methods: {
@@ -57,8 +58,8 @@ Component.register('blog-category-list', {
             this.page = page;
             this.loadItems();
         },
-        async onDeleteItem(item) {
-            let itemId = item.id
+        async onDeleteItem() {
+            let itemId = this.categoryId
             if (!itemId) {
                 this.createNotificationError({
                     title: "Error",
@@ -80,6 +81,7 @@ Component.register('blog-category-list', {
                 // Attempt to delete the item
                 await repository.delete(itemId, Shopware.Context.api);
     
+                this.confirmModal = false;
                 // Notify success
                 this.createNotificationSuccess({
                     title: "Success",
