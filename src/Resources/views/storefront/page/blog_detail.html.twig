@@ -37,7 +37,7 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="table_content_area">
-                            <h3 class="blog_details_title">Table of Content</h3>
+                            <h3 class="blog_details_title">{{ 'blog-details.title.tableContentTitle'|trans }}</h3>
                             <ul class="table_list">
 {#                                class="active_list"#}
                                 {% for heading in blog.toc %}
@@ -55,7 +55,7 @@
                         <div class="details_right_area">
                             {% if ( blog.categories | length >0)%}
                                 <div class="category">
-                                    <h3 class="blog_details_title">Categories</h3>
+                                    <h3 class="blog_details_title">{{ 'blog-details.title.categoryTitle'|trans }}</h3>
                                     <div class="category_list d-flex align-items-center flex-wrap gap-2"
                                     >
 {#                                        class="active"#}
@@ -68,7 +68,7 @@
                             {% endif %}
                             {% if ( blog.relatedProducts | length >0)%}
                                 <div class="related_product_area">
-                                    <h3 class="blog_details_title">Related Products</h3>
+                                    <h3 class="blog_details_title">{{ 'blog-details.title.relatedProductTitle'|trans }}</h3>
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
                                             <a href="{{ product.url }}" class="related_product">
@@ -92,7 +92,7 @@
     {% if(blog.relatedBlogs|length >0) %}
     {% block related_article %}
         <div class="related_article ">
-            <h5 class="related_details_title">Related Article</h5>
+            <h5 class="related_details_title">{{ 'blog-details.title.relatedBlogTitle'|trans }}</h5>
             <div class="related-article-item row">
                 {% for relatedBlog in blog.relatedBlogs%}
                       {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
