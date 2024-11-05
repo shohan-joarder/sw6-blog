@@ -15,7 +15,7 @@ img,svg{
     gap: 8px;
     padding: 8px 24px;
     &.active_category{
-      border: 1px solid #b30505 !important;
+      border: 1px solid $sw-color-brand-primary !important;
     }
   }
 
@@ -175,7 +175,7 @@ img,svg{
   background: #fff;
 }
 .blog-card:hover {
-  border-color: #b30505;
+  border-color: $sw-color-brand-primary;
 }
 @media (min-width: 992px) and (max-width: 1199px) {
   .blog-card {
@@ -212,6 +212,10 @@ img,svg{
 .blog-card .date_area {
   gap: 10px 30px;
   margin-top: 24px;
+  svg{
+    max-width: 24px;
+    color: $sw-color-brand-primary;
+  }
 }
 .blog-card .date_area a {
   text-decoration: none;
@@ -275,20 +279,21 @@ img,svg{
   padding: 0 24px;
   margin-top: 24px;
   border-radius: 2px;
-  border: 1px solid #b30505;
+  border: 1px solid $sw-color-brand-primary;
   text-decoration: none;
   background-color: white;
 }
 .blog-card .red_more_btn span {
-  color: #b30505;
+  color: $sw-color-brand-primary;
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
   letter-spacing: 0.168px;
   text-transform: uppercase;
 }
-.blog-card .red_more_btn img {
+.blog-card .red_more_btn img,.blog-card .red_more_btn svg {
   max-width: 20px;
+  color: $sw-color-brand-primary;
 }
 
 .bottom_description{
@@ -479,7 +484,7 @@ img,svg{
   }
 }
 .details_content_wrapper .table_list li a.active_list {
-  color: #b30505;
+  color: $sw-color-brand-primary;
 }
 .details_content_wrapper .table_list li a:hover {
   opacity: 0.8;
@@ -519,7 +524,7 @@ img,svg{
 }
 .details_content_wrapper .category_list a.active,
 .details_content_wrapper .category_list button.active {
-  border: 1px solid #b30505 !important;
+  border: 1px solid $sw-color-brand-primary !important;
 }
 .details_content_wrapper .related_product_area {
   margin-top: 50px;
