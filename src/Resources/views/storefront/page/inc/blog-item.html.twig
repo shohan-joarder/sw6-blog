@@ -1,24 +1,35 @@
-<div class="col-6 col-md-4 blog-card">
-    <a href="{{ path('frontend.blog.details', {'slug': blog.slug}) }}" style="text-decoration: none;">
-        <div class="card">
-            <div class="p-3 cardImage">
+
+<div class="col-lg-4 col-md-6 ">
+<a href="{{ path('frontend.blog.details', {'slug': blog.slug}) }}" style="text-decoration: none;">
+
+        <div class="blog-card">
+            <div class="cardImage">
                 <img src="{{ blog.media.url ?: thumb }}" class="card-img-top" alt="{{ blog.title }}">
             </div>
-            <div class="card-body">
-                <div class="card-header d-flex justify-content-between">
-                    <p>
+            <div >
+                <div class="date_area d-flex align-items-center flex-wrap">
+
+                    <div class="d-flex align-items-center flex-wrap gap-2">
                     {% if(blog.postAuthor.media.url) %}
-                    <img src="{{blog.postAuthor.media.url}}" >
+                    <img src="{{blog.postAuthor.media.url}}"   class="user_icon">
                     {% endif %}
-                    {{ blog.postAuthor.name }}</p>
-                    <p>{{ blog.publishedAt|date('F j, Y') }}</p>
+                        <h5> {{ blog.postAuthor.name }}</h5>
+                   </div>
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <h5>{{ blog.publishedAt|date('F j, Y') }}</h5>
+                    </div>
+
                 </div> <!-- Closed div for card-header -->
-                <h5 class="py-2">{{ blog.title }}</h5>
-                <p class="card-text">
-                    {{ blog.short_description }}
-                </p>
+                <div class="content_area">
+                    <h3>{{ blog.title }}</h3>
+                    <p >
+                        {{ blog.short_description }}
+                    </p>
+                </div>
+
             </div> <!-- Closed div for card-body -->
+            <button class="red_more_btn">READ More</button>
         </div> <!-- Closed div for card -->
-        <button class="btn btn-outline-danger btn-lg px-5">READ More -></button>
-    </a>
+</a>
 </div> <!-- Closed div for blog-card -->
+
