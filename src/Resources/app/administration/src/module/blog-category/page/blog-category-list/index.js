@@ -25,7 +25,7 @@ Component.register('blog-category-list', {
             sortDirection: 'DESC',
             naturalSorting: false,
             columns: [
-                { property: 'name', label: 'Title' },
+                { property: 'name', label: 'Title',routerLink: 'blog.category.create', },
                 { property: 'slug', label: 'Slug' },
                 { property: 'meta_title', label: 'Meta Title' }
             ],

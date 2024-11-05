@@ -32,10 +32,10 @@ Component.register('blog-post-list', {
             sortDirection: 'DESC',
             naturalSorting: false,
             columns: [
-                { property: 'title', label: 'Title', width: '200px' },
-                { property: 'slug', label: 'Slug', width: '150px' },
+                { property: 'title', label: 'Title',routerLink: 'blog.post.create', width: '200px' },
+                // { property: 'slug', label: 'Slug', width: '150px' },
                 { property: 'postAuthor.name', label: 'Author', width: '100px' },
-                { property: 'meta_title', label: 'Meta Title', width: '150px' },
+                { property: 'meta_title', label: 'Meta Title', width: '150px' }
             ],
             entity:"gdn_blog_post",
             confirmModal:false

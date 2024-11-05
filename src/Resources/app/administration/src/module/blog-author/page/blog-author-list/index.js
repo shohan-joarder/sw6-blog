@@ -24,7 +24,7 @@ Component.register('blog-author-list', {
             sortDirection: 'DESC',
             naturalSorting: false,
             columns: [
-                { property: 'name', label: 'Title' },
+                { property: 'name', label: 'Title',routerLink: 'blog.author.create', },
                 { property: 'description', label: 'Description' }
             ],
             entity:"gdn_blog_author",

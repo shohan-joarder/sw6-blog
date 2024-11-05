@@ -43,7 +43,6 @@
         <service id="Gdn\GdnBlog\Core\Content\GdnBlogPostCategory\BlogPostCategoryDefinition">
             <tag name="shopware.entity.definition" entity="gdn_blog_post_gdn_blog_category" />
         </service>
-     
 
     </services>
 </container>
