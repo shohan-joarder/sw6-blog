@@ -62,7 +62,7 @@
                                     >
 {#                                        class="active"#}
                                         {% for category in blog.categories %}
-                                            <a type="button"   href="{{ path('frontend.blog', {'category': category.slug}) }}" >{{ category.name }}</a>
+                                            <a type="button"   href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" >{{ category.name }}</a>
                                         {% endfor %}
                                     </div>
 
