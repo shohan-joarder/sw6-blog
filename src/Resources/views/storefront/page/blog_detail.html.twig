@@ -41,7 +41,7 @@
                             <ul class="table_list">
 {#                                class="active_list"#}
                                 {% for heading in blog.toc %}
-                                    {% if(heading.text) %}
+                                    {% if(heading.text !="") %}
                                     <li class="toc-{{ heading.level }}">
                                         <a href="#{{ heading.id }}">{{ heading.text }}</a>
                                     </li>
