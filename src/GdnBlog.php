@@ -8,7 +8,7 @@ use Shopware\Core\Framework\Plugin\Context\DeactivateContext;
 use Shopware\Core\Framework\Plugin\Context\InstallContext;
 use Shopware\Core\Framework\Plugin\Context\UninstallContext;
 use Shopware\Core\Framework\Plugin\Context\UpdateContext;
-use Shopware\Core\Content\Search\Indexer\SearchIndexerRegistry;
+
 class GdnBlog extends Plugin
 {
     public function install(InstallContext $installContext): void
@@ -19,16 +19,11 @@ class GdnBlog extends Plugin
 
     private function registerSearchIndex(): void
     {
-        $this->container->get(SearchIndexerRegistry::class)->registerIndex(BlogSearchIndexDefinition::class);
+        // 
     }
 
     public function uninstall(UninstallContext $uninstallContext): void
     {
-        parent::uninstall($uninstallContext);
-
-        if ($uninstallContext->keepUserData()) {
-            return;
-        }
 
         // Remove or deactivate the data created by the plugin
     }
