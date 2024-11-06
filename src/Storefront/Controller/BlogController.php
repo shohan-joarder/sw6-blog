@@ -427,7 +427,8 @@ class BlogController extends StorefrontController
         $criteria->addAssociation('tags'); // Load tags association
         $criteria->addAssociation('seoUrls'); // Load SEO URLs association
         $criteria->addAssociation('media'); // Load SEO URLs association
-        $criteria->addFilter(new EqualsFilter('available', true)); // Only include available products
+        $criteria->addFilter(new EqualsFilter('available', true));
+        $criteria->addFilter(new EqualsFilter('active', true));// Only include available products
         $criteria->addFilter(new EqualsFilter('tags.id', $tagId)); // Filter by tag ID
         $criteria->setLimit(3); // Limit to 3 products
 
