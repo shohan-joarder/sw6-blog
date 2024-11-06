@@ -1,0 +1,13 @@
+{% block sw_cms_block_six_column_text_image_preview %}
+    <div class="row d-flex">
+        {% for i in 0..5 %}
+            <div class="col-2">
+                <div class="card">
+                    <img :src="assetFilter('/administration/static/img/cms/preview_mountain_small.jpg')">
+                    <div class="card-title">Color</div>
+                    <div class="card-title">Code</div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

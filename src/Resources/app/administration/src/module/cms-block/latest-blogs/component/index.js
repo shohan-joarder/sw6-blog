@@ -45,7 +45,7 @@ Shopware.Component.register('sw-cms-block-latest-blogs', {
 
                     this.items.push(blog)
                 });
-                console.log( this.items);
+                // console.log( this.items);
                 // this.items = result;
             }).catch((error) => {
                 console.error('Error fetching latest blogs:', error);
