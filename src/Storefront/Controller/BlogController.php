@@ -86,6 +86,7 @@ class BlogController extends StorefrontController
             }
         }
 
+
         if($category_slug){
             $findCategory = new Criteria();
             $findCategory->addAssociation('media');
