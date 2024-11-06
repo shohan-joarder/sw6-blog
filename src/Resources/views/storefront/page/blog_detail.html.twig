@@ -73,7 +73,7 @@
                                     <h3 class="blog_details_title">Related Products</h3>
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
-                                            <a href="{{ product.url }}" class="related_product shadow-sm">
+                                            <a href="{{ product.url }}" class="related_product shadow">
                                                 <img class="product_img" src="{{product.media}}" alt="{{product.name}}">
                                                 <h4 class="related_product_title">{{product.name}}</h4>
                                             </a>
