@@ -262,8 +262,8 @@ class BlogController extends StorefrontController
         $scheme = $request->isSecure() ? 'https://' : 'http://';
 
         $shopUrl =  $request->getHost();
-        $port = $request->getPort() != 80 ? $request->getPort() : "";
-        $appUrl = $scheme .$shopUrl."/" . $port;
+        $port = $request->getPort() != 80 ?":". $request->getPort() : "";
+        $appUrl = $scheme .$shopUrl . $port ."/";
 
         foreach ($blogPost->getTags() as $tag) {
             if(count($relatedProducts) > 2){
