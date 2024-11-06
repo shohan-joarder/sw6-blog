@@ -74,7 +74,7 @@
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
                                             <a href="{{ product.url }}" class="related_product shadow">
-                                                <img class="product_img" src="{{product.media}}" alt="{{product.name}}">
+                                                <img class="product_img p-3" src="{{product.media}}" alt="{{product.name}}">
                                                 <h4 class="related_product_title">{{product.name}}</h4>
                                             </a>
                                         {% endfor %}
