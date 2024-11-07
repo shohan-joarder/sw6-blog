@@ -23,6 +23,7 @@ Component.register('blog-post-list', {
     inject: ['repositoryFactory'],
     data() {
         return {
+            postId:null,
             items: [],
             total: 0,
             limit: 10,
@@ -31,13 +32,13 @@ Component.register('blog-post-list', {
             sortDirection: 'DESC',
             naturalSorting: false,
             columns: [
-                { property: 'title', label: 'Title', width: '200px' },
-                { property: 'slug', label: 'Slug', width: '150px' },
+                { property: 'title', label: 'Title',routerLink: 'blog.post.create', width: '200px' },
+                // { property: 'slug', label: 'Slug', width: '150px' },
                 { property: 'postAuthor.name', label: 'Author', width: '100px' },
-                // { property: 'shortDescription', label: 'Short Description', width: '300px' },
-                { property: 'meta_title', label: 'Meta Title', width: '150px' },
+                { property: 'meta_title', label: 'Meta Title', width: '150px' }
             ],
-            entity:"gdn_blog_post"
+            entity:"gdn_blog_post",
+            confirmModal:false
         };
     },
     methods: {
@@ -55,7 +56,6 @@ Component.register('blog-post-list', {
 
         },
         onEditItem(item){
-            console.log(item);
             const id = item.id;
             this.$router.push({ name: 'blog.post.create', params: {id}  });
         },
@@ -66,8 +66,8 @@ Component.register('blog-post-list', {
             this.page = page;
             this.loadItems();
         },
-        async onDeleteItem(item) {
-            let itemId = item.id
+        async onDeleteItem() {
+            let itemId = this.postId;
             if (!itemId) {
                 return;
             }
@@ -81,6 +81,7 @@ Component.register('blog-post-list', {
                 // Attempt to delete the item
                 await repository.delete(itemId, Shopware.Context.api);
     
+                this.confirmModal = false;
                 // Notify success
                 this.createNotificationSuccess({
                     title: "Success",
@@ -89,6 +90,7 @@ Component.register('blog-post-list', {
     
                 // Refresh the list after deletion
                 this.loadItems();
+                
             } catch (error) {
                 // Enhanced error logging
                 // console.error("Error deleting item:", error.message || error);

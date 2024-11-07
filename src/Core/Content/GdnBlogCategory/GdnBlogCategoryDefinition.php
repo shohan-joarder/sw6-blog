@@ -39,7 +39,7 @@ class GdnBlogCategoryDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new StringField('name', 'name')),
             (new StringField('slug', 'slug')),
-            (new LongTextField('short_description', 'short_description')),
+            (new LongTextField('short_description', 'shortDescription')),
             (new LongTextField('description', 'description')),
             (new BoolField('active', 'active')),
             (new StringField('meta_title', 'meta_title')),

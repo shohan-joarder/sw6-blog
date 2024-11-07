@@ -53,11 +53,11 @@ class BlogController extends StorefrontController
     }
 
     #[Route(
-        path: '/blogs/{category?}',
+        path: '/blogs/{category_slug?}',
         name: 'frontend.blog',
         methods: ['GET']
     )]
-    public function allBlogs(Request $request, SalesChannelContext $context, ?string $category = null): Response
+    public function allBlogs(Request $request, SalesChannelContext $context, ?string $category_slug = null): Response
     {
         // Fetch configuration values
         $pageTitle = $this->systemConfigService->get("GdnBlog.config.pagetitle");
@@ -86,10 +86,10 @@ class BlogController extends StorefrontController
             }
         }
 
-        if($category){
+        if($category_slug){
             $findCategory = new Criteria();
             $findCategory->addAssociation('media');
-            $findCategory->addFilter(new EqualsFilter('slug', $category));
+            $findCategory->addFilter(new EqualsFilter('slug', $category_slug));
 
             $getCategoryData = $this->categoryRepository->search($findCategory, $context->getContext())->first();
 
@@ -97,7 +97,10 @@ class BlogController extends StorefrontController
             if (!$getCategoryData) {
                 return $this->redirectToRoute('frontend.blog');
             }
-            // dd($getCategoryData);
+            $pageTitle = $getCategoryData->getName();
+            $shortDescription = $getCategoryData->getShortDescription();
+            $description = $getCategoryData->getDescription();
+            // dd($description);
             // Retrieve the banner URL if media is associated
             $banner = $getCategoryData->media ? $getCategoryData->media->getUrl() : null;
             $metaTitle = $getCategoryData->getMetaTitle();
@@ -139,8 +142,8 @@ class BlogController extends StorefrontController
         $criteria->addFilter($rangeFilter);
 
         // If a category is specified, filter blog posts by the selected category
-        if ($category) {
-            $criteria->addFilter(new EqualsFilter('postCategories.slug', $category));
+        if ($category_slug) {
+            $criteria->addFilter(new EqualsFilter('postCategories.slug', $category_slug));
         }
 
         // Fetch blog entries
@@ -149,8 +152,8 @@ class BlogController extends StorefrontController
 
         // Create a separate criteria to count total blogs matching the category slug
         $countCriteria = new Criteria();
-        if ($category) {
-            $countCriteria->addFilter(new EqualsFilter('postCategories.slug', $category));
+        if ($category_slug) {
+            $countCriteria->addFilter(new EqualsFilter('postCategories.slug', $category_slug));
         }
 
         // Fetch total count of matching blogs
@@ -191,8 +194,8 @@ class BlogController extends StorefrontController
                 ] : null,
                 'short_description' => $blog->getShortDescription(),
                 'postAuthor' => [
-                    'name' => $blog->postAuthor->getName(),
-                    'media' => $blog->postAuthor->media ? [
+                    'name' => $blog->postAuthor? $blog->postAuthor->getName() : null,
+                    'media' => $blog->postAuthor && $blog->postAuthor->media ? [
                         'id' => $blog->postAuthor->media->getId(),
                         'url' => $blog->postAuthor->media->getUrl(),
                     ] : null,
@@ -212,7 +215,7 @@ class BlogController extends StorefrontController
             ],
             'categories' => $uniqueCategories,
             'banner'=>$banner,
-            'category_slug'=>$category
+            'category_slug'=>$category_slug
         ]);
     }
 
@@ -240,7 +243,7 @@ class BlogController extends StorefrontController
 
         // Check if the blog post exists
         if (!$blogPost) {
-            return new Response('Blog post not found.', Response::HTTP_NOT_FOUND);
+            return new RedirectResponse($this->generateUrl('frontend.blog'));
         }
 
         // handle meta info
@@ -424,15 +427,6 @@ class BlogController extends StorefrontController
         $criteria->addAssociation('seoUrls'); // Load SEO URLs association
         $criteria->addAssociation('media'); // Load SEO URLs association
 
-        // Use InFilter to exclude existing products
-        // Use NotFilter with InFilter to exclude existing products
-        // if (!empty($existingProductIds)) {
-        //     $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
-        //         new NotInFilter('id', $existingProductIds)
-        //     ]));
-        // }
-
-
         $criteria->addFilter(new EqualsFilter('tags.id', $tagId)); // Filter by tag ID
         $criteria->setLimit(3); // Limit to 3 products
 
@@ -460,11 +454,19 @@ class BlogController extends StorefrontController
                 $this->logger->info('No SEO URL found for product ID: ' . $product->getId());
             }
 
-            $firstItem = $product->getMedia()->first();
+            $firstMedia = $product->getMedia()->first();
+
+            if ($firstMedia) {
+                $coverPhotoUrl = $firstMedia->getMedia()->getUrl(); // Get the URL of the cover photo
+            } else {
+                // Handle cases where there is no cover photo
+                $coverPhotoUrl = null;
+            }
+
             return [
                 'id' => $product->getId(),
                 'name' => $product->getName(),
-                'media' => $firstItem->getMedia()->getUrl() ?? null,
+                'media' => $coverPhotoUrl,
                 'price' => $product->getPrice()->first()->getGross(), // Example for price
                 'url' => $url->seoPathInfo ? $appUrl . $url->seoPathInfo : '', // Get the URL if it exists
             ];

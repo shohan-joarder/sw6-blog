@@ -23,7 +23,7 @@ Component.register('blog-category-create', {
                 name: '',
                 slug: '',
                 description: '',
-                short_description: '',
+                shortDescription: '',
                 active: false,
                 mediaId:null,
                 meta_title:"",
@@ -85,7 +85,7 @@ Component.register('blog-category-create', {
             // Set properties on the item
             itemToSave.name = this.item.name;
             itemToSave.slug = this.item.slug;
-            itemToSave.short_description = this.item.short_description;
+            itemToSave.shortDescription = this.item.shortDescription;
             itemToSave.description = this.item.description;
             itemToSave.active = this.item.active;
             itemToSave.meta_title = this.item.meta_title;
@@ -118,6 +118,19 @@ Component.register('blog-category-create', {
                 this.loading = false;
             }
         },
+        generateSlug() {
+            const text = this.item.name;
+            let slug= text
+                .toString()
+                .toLowerCase() // Convert to lowercase
+                .trim() // Remove whitespace from both ends
+                .normalize('NFD') // Handle special characters like accents
+                .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+                .replace(/[^a-z0-9 ]/g, '') // Remove special characters
+                .replace(/\s+/g, '-') // Replace spaces with hyphens
+
+                this.item.slug = slug;
+        },
         async validateRequiredFields() {
             let isValid = true;
 
@@ -136,7 +149,7 @@ Component.register('blog-category-create', {
                 this.errors.slug = null;
             }
 
-            if (!this.item.short_description) {
+            if (!this.item.shortDescription) {
                 this.errors.short_description = "Short description is required";
                 isValid = false;
             } else {
@@ -173,6 +186,14 @@ Component.register('blog-category-create', {
             this.loading = false;
         
             return result.total === 0; // Return true if no duplicates are found
+        }
+    },
+
+    watch: {
+        'item.name': function(newName, oldName) {
+            if (oldName && newName !== oldName) {
+                this.generateSlug();
+            }
         }
     },
     computed: {

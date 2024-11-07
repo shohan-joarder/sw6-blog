@@ -641,6 +641,7 @@ img,svg{
   }
 }
 
+
 .related-article-item{
   .col-lg-4  {
     width: 100%;
@@ -648,4 +649,9 @@ img,svg{
   }
 }
 
+
+
+.active_content,.active_content a{
+  color: firebrick !important;
+}
 

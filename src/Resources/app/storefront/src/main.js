@@ -1,34 +1,24 @@
-// // // Import all necessary Storefront plugins
-// // import ExamplePlugin from './example-plugin/example-plugin.plugin';
+//table of content list selection
 
-// // // Register your plugin via the existing PluginManager
-// // const PluginManager = window.PluginManager;
+const tableOfContentSelection = document.querySelectorAll(".table_content_area > ul > li");
 
-// // PluginManager.register('ExamplePlugin', ExamplePlugin, '[data-example-plugin]');
-// const editorContent = document.getElementById('content').innerHTML; // Get the content from the editor
+// Iterate over each list item
+tableOfContentSelection.forEach(item => {
+    // Add a click event listener
+    item.addEventListener('click', function() {
+        // Remove 'active_content' class from all items
+        tableOfContentSelection.forEach(i => {
+            i.classList.remove('active_content');
+        });
 
-// // Create a temporary element to parse the HTML
-// const tempDiv = document.createElement('div');
-// tempDiv.innerHTML = editorContent;
+        // Find the anchor tag within the clicked item and get its href attribute
+        // const link = this.querySelector("a");
+        // if (link) {
+        //     const hrefValue = link.getAttribute("href");
+        //     console.log(hrefValue); // Log the href value
+        // }
 
-// // Select all headings
-// const headings = tempDiv.querySelectorAll('h1, h2, h3, h4, h5, h6');
-// const toc = [];
-
-// headings.forEach((heading) => {
-//     const id = heading.textContent.toLowerCase().replace(/\s+/g, '-'); // Create an ID for the heading
-//     heading.setAttribute('id', id); // Set the ID on the heading for linking
-//     toc.push({ text: heading.textContent, id });
-// });
-
-// const tocContainer = document.getElementById('toc'); // Assuming you have a div with this ID in your HTML
-// tocContainer.innerHTML = ''; // Clear previous TOC content
-
-// console.log(toc);
-
-// toc.forEach((item) => {
-//     const link = document.createElement('a');
-//     link.href = `#${item.id}`;
-//     link.textContent = item.text;
-//     tocContainer.appendChild(link);
-// });
+        // Add 'active_content' class to the clicked item
+        this.classList.add('active_content');
+    });
+});

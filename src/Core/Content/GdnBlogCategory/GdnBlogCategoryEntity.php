@@ -52,7 +52,7 @@ class GdnBlogCategoryEntity extends Entity
 
     public function setShortDescription(?string $shortDescription): void
     {
-        $this->short_description = $shortDescription;
+        $this->shortDescription = $shortDescription;
     }
 
     public function getDescription(): ?string

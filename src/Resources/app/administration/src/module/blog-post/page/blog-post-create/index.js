@@ -5,7 +5,7 @@ import "./blog-post-create.scss"
 import deDE from './../../../../snippet/de-DE.json';
 import enGB from './../../../../snippet/en-GB.json';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin,Context } = Shopware;
 
 const { Criteria } = Shopware.Data;
 
@@ -99,8 +99,6 @@ Component.register('blog-post-create', {
                 return;
             }
 
-            console.log(this.item.description)
-
             await this.updateItem();
         },
         async updateItem() {
@@ -137,7 +135,7 @@ Component.register('blog-post-create', {
                     // Update existing item
                     await repository.save(itemToSave, Shopware.Context.api);
                     this.createdId = this.item.id;
-                    // await this.manageCategoryBlog();
+                    await this.manageCategoryBlog();
                 } else {
                     // Create new item with predefined ID
                     const postId = Shopware.Utils.createId();
@@ -219,29 +217,34 @@ Component.register('blog-post-create', {
             
             const categories = this.item.categoryIds
             if (categories) {
+                const itemId = this.item.id;
+                // if(itemId){
+                    
+                //     try {
+                //         const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
+                        
+                //         const criteria = new Criteria();
+                //         criteria.addFilter(Shopware.Data.Criteria.equals('blogId', itemId));
+                //         const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
+                //         console.log(categoriesToDelete);
+                //         return;
+                //         // try {               
 
+                //         //     await blogRepository.delete(itemId, Shopware.Context.api);
+                            
+                //         // } catch (error) {
+                //         //     console.log(error);
+                //         //     console.log("loaging")
+                //         //     return;
+                //         // }
 
+                //     } catch (error) {
+                //         console.log("Bulk delete error "+ error);
+                //     }
 
-                if(this.item.id){
+                    
 
-                    const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
-
-                    // Step 1: Create criteria to find records with the specified blog_id
-                    const criteria = new Shopware.Data.Criteria();
-                    criteria.addFilter(Shopware.Data.Criteria.equals('blogId', this.item.id));
-            
-                    // Step 2: Search for matching records
-                    const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
-            
-                    // Step 3: Delete each found record
-                    const deleteOperations = categoriesToDelete.map(category =>
-                        blogRepository.delete(category.id, Shopware.Context.api)
-                    );
-            
-                    // Execute all delete operations
-                    await Promise.all(deleteOperations);
-
-                }
+                // }
 
                 for (const category of categories) {
                     const categoryBlogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
@@ -326,6 +329,26 @@ Component.register('blog-post-create', {
             this.loading = false;
         
             return result.total === 0; // Return true if no duplicates are found
+        },
+        generateSlug() {
+            const text = this.item.title;
+            let slug= text
+                .toString()
+                .toLowerCase() // Convert to lowercase
+                .trim() // Remove whitespace from both ends
+                .normalize('NFD') // Handle special characters like accents
+                .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
+                .replace(/[^a-z0-9 ]/g, '') // Remove special characters
+                .replace(/\s+/g, '-') // Replace spaces with hyphens
+
+                this.item.slug = slug;
+        },
+    },
+    watch: {
+        'item.title': function(newName, oldName) {
+            if (oldName && newName !== oldName) {
+                this.generateSlug();
+            }
         }
     },
     computed: {
