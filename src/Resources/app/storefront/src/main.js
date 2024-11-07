@@ -110,3 +110,53 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 });
+
+const searchElements = document.getElementsByName("search");
+let typingTimer;                // Timer identifier
+const doneTypingInterval = 500; // Time in milliseconds (1 second)
+
+searchElements.forEach(element => {
+    element.addEventListener("keyup", function() {
+        clearTimeout(typingTimer);  // Clear the previous timer on each keystroke
+        typingTimer = setTimeout(async () => {
+            
+            const searchValue = this.value;
+
+            const response = await fetch(`/search-blog`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    searchTerm: searchValue
+                })
+            });
+
+            const {count,sarch_url} = await response.json();
+
+            count > 0 && document.querySelectorAll('.search-suggest-no-result').forEach(element => {
+                element.remove();
+            });
+            const searchSuggestionContainer = document.querySelector(".search-suggest-container");
+            
+            if (searchSuggestionContainer) {
+                searchSuggestionContainer.insertAdjacentHTML('beforeend', `
+                    <li class="js-result search-suggest-total">
+                        <div class="row align-items-center g-0">
+                            <div class="col">
+                                <a href="${count > 0 && sarch_url}" title="Show all search results" class="search-suggest-total-link">
+                                    ${count > 0 ? count +" Blog found" : "No blog found"} 
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                `);
+            }
+
+        }, doneTypingInterval);
+    });
+
+    element.addEventListener("keydown", function() {
+        clearTimeout(typingTimer); // Clear the timer on key down to reset the delay
+    });
+});

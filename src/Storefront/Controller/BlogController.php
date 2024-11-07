@@ -21,6 +21,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\InFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotInFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\FieldSorting;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
+
 
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -64,6 +66,7 @@ class BlogController extends StorefrontController
     )]
     public function allBlogs(Request $request, SalesChannelContext $context, ?string $category_slug = null): Response
     {
+        
         // Fetch configuration values
         $pageTitle = $this->systemConfigService->get("GdnBlog.config.pagetitle");
         $itemPerPage = (int) $this->systemConfigService->get('GdnBlog.config.itemPerPage');
@@ -128,13 +131,20 @@ class BlogController extends StorefrontController
         // Calculate the offset for pagination
         $offset = ($page - 1) * $itemPerPage;
 
+        $searchTerm = $request->get('search');
         // Create criteria to fetch all blog entries
         $criteria = new Criteria();
         $criteria->addAssociation('media');
         $criteria->addAssociation('postCategories');
         $criteria->addAssociation('postAuthor.media');
+
+        if (!empty($searchTerm)) {
+            $criteria->addFilter(new ContainsFilter('title', $searchTerm));
+        }
+
         $criteria->setLimit($itemPerPage);
         $criteria->setOffset($offset);
+        
         $criteria->addFilter(new EqualsFilter('active', true));
         // Get the current date
         $currentDate = (new \DateTime())->format('Y-m-d H:i:s'); // Current date and time
@@ -429,6 +439,37 @@ class BlogController extends StorefrontController
             Response::HTTP_OK,
             ['Content-Type' => 'application/json']
         );
+    }
+    #[Route(
+        path: '/search-blog',
+        name: 'frontend.search-blog',
+        methods: ['POST']
+    )]
+    public function searchBlog(Request $request): Response
+    {
+        // Retrieve search term from request
+        $searchTerm = $request->request->get('searchTerm');
+        
+        // Check if the search term is provided
+        if (empty($searchTerm)) {
+            return new Response(json_encode(['count' => 0]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
+        }
+
+        // Create criteria for searching blog posts
+        $criteria = new Criteria();
+        $criteria->addFilter(new ContainsFilter('title', $searchTerm));
+
+        // Search for matching blog posts
+        $context = Context::createDefaultContext();
+        $result = $this->blogRepository->search($criteria, $context);
+        
+        // Get the count of matching blog posts
+        $count = $result->getTotal();
+        
+        // Return the count as a JSON response
+        return new Response(json_encode(['count' => $count,'sarch_url'=>  $this->router->generate('frontend.blog', [
+            'search' => $searchTerm  // Assuming the `slug` is the correct parameter
+        ]),]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 
 
