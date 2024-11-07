@@ -2,10 +2,13 @@
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 {% block base_content %}
 
-    <h3 class="blog-page__title test text-center"> Blog Categories </h3>
+    <h3 class="blog-page__title test text-center"> {{ 'blog-list.title.blogTitle'|trans }} </h3>
 
     <div class="category-area d-flex justify-content-center align-items-center  flex-wrap gap-2  text-center mb-3">
-        <a href="{{ path('frontend.blog')}}" type="button" class="btn btn-outline-secondary {{ category_slug == null? 'active_category' : '' }}" >All Blog</a>
+
+
+        <a href="{{ path('frontend.blog')}}" type="button" class="btn btn-outline-secondary {{ category_slug == null? 'active_category' : '' }}" >{{ 'blog-list.title.allBlog'|trans }}</a>
+
         {% for category in categories %}
             <a type="button" class="btn btn-sm btn-outline-secondary {{ category.slug == category_slug ? 'active_category' : '' }}" href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" >{{ category.name }}</a>
         {% endfor %}
@@ -20,7 +23,7 @@
             <p>{{page_info.shortDescription}}</p>
             {% if(page_info.description) %}
                 <div class="d-flex justify-content-center">
-                    <a type="button" class="btn btn-sm bg-light" href="#description">Read More</a>
+                    <a type="button" class="btn btn-sm bg-light" href="#description">{{ 'blog-list.button.readMore'|trans }}</a>
                 </div>
 
             {% endif %}
