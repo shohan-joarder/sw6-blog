@@ -86,6 +86,7 @@ class BlogController extends StorefrontController
             }
         }
 
+
         if($category_slug){
             $findCategory = new Criteria();
             $findCategory->addAssociation('media');
@@ -261,8 +262,8 @@ class BlogController extends StorefrontController
         $scheme = $request->isSecure() ? 'https://' : 'http://';
 
         $shopUrl =  $request->getHost();
-        $port = $request->getPort() != 80 ? $request->getPort() : "";
-        $appUrl = $scheme .$shopUrl."/" . $port;
+        $port = $request->getPort() != 80 ?":". $request->getPort() : "";
+        $appUrl = $scheme .$shopUrl . $port ."/";
 
         foreach ($blogPost->getTags() as $tag) {
             if(count($relatedProducts) > 2){
@@ -426,7 +427,9 @@ class BlogController extends StorefrontController
         $criteria->addAssociation('tags'); // Load tags association
         $criteria->addAssociation('seoUrls'); // Load SEO URLs association
         $criteria->addAssociation('media'); // Load SEO URLs association
-
+        $criteria->addFilter(new RangeFilter('stock', ['gt' => 0])); // "gt" means greater than 
+        $criteria->addFilter(new EqualsFilter('available', true));
+        $criteria->addFilter(new EqualsFilter('active', true));// Only include available products
         $criteria->addFilter(new EqualsFilter('tags.id', $tagId)); // Filter by tag ID
         $criteria->setLimit(3); // Limit to 3 products
 

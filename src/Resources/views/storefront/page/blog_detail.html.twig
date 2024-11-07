@@ -72,11 +72,13 @@
                         <div class="table_content_area">
                             <h3 class="blog_details_title">{{ 'blog-details.title.tableContentTitle'|trans }}</h3>
                             <ul class="table_list">
-{#                                class="active_list"#}
+                                {#  class="active_list"#}
                                 {% for heading in blog.toc %}
-                                    <li class="toc-{{ heading.level }}">
-                                        <a href="#{{ heading.id }}">{{ heading.text }}</a>
-                                    </li>
+                                    {% if heading.text != "" %}
+                                        <li class="toc-{{ heading.level }}">
+                                            <a href="#{{ heading.id }}">{{ heading.text }}</a>
+                                        </li>
+                                    {% endif %}
                                 {% endfor %}
                             </ul>
                         </div>
@@ -93,7 +95,7 @@
                                     >
 {#                                        class="active"#}
                                         {% for category in blog.categories %}
-                                            <a type="button"   href="{{ path('frontend.blog', {'category': category.slug}) }}" >{{ category.name }}</a>
+                                            <a type="button"   href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" >{{ category.name }}</a>
                                         {% endfor %}
                                     </div>
 
@@ -104,9 +106,11 @@
                                     <h3 class="blog_details_title">{{ 'blog-details.title.relatedProductTitle'|trans }}</h3>
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
-                                            <a href="{{ product.url }}" class="related_product">
-                                                    <img class="product_img" src="{{product.media}}" alt="{{product.name}}">
-                                                        <h4  >{{product.name}}</h4>
+                                            <a href="{{ product.url }}" class="related_product shadow">
+                                                <img class="product_img p-3" src="{{product.media}}" alt="{{product.name}}">
+                                                {% if product.name !="" %}
+                                                <h4 class="related_product_title">{{product.name}}</h4>
+                                                {% endif %}
                                             </a>
                                         {% endfor %}
                                     </div>
