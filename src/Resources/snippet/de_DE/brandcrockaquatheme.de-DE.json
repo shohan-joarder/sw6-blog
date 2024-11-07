@@ -1,0 +1,19 @@
+{
+    "blog-list": {
+        "title": {
+            "allBlog": "Alle Blogs",
+            "blogTitle": "Blogkategorien"
+        },
+        "button": {
+            "readMore": "Weiterlesen"
+        }
+    },
+    "blog-details": {
+        "title": {
+            "tableContentTitle": "Inhaltsverzeichnis",
+            "categoryTitle": "Kategorien",
+            "relatedProductTitle": "Verwandte Produkte",
+            "relatedBlogTitle": "Verwandter Artikel"
+        }
+    }
+}
