@@ -83,22 +83,21 @@
                             </ul>
                         </div>
                     </div>
-                    <div class="col-md-6"> <div id="content">
+                    <div class="col-md-6">
+                        <div id="content">
                             {{ blog.description|raw }}
-                        </div> </div>
+                        </div>
+                    </div>
                     <div class="col-md-3">
                         <div class="details_right_area">
                             {% if ( blog.categories | length >0)%}
                                 <div class="category">
                                     <h3 class="blog_details_title">{{ 'blog-details.title.categoryTitle'|trans }}</h3>
-                                    <div class="category_list d-flex align-items-center flex-wrap gap-2"
-                                    >
-{#                                        class="active"#}
+                                    <div class="category_list d-flex align-items-center flex-wrap gap-2" >
                                         {% for category in blog.categories %}
                                             <a type="button"   href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" >{{ category.name }}</a>
                                         {% endfor %}
                                     </div>
-
                                 </div>
                             {% endif %}
                             {% if ( blog.relatedProducts | length >0)%}
@@ -121,8 +120,6 @@
                 </div>
             </div>
         </section>
-
-
 
     {% endblock %}
 
