@@ -4,6 +4,7 @@ namespace Gdn\GdnBlog\Core\Content\GdnBlogPostCategory;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
@@ -35,7 +36,7 @@ class BlogPostCategoryDefinition extends MappingEntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-
+            (new IdField('id', 'id'))->addFlags(new Required(), new PrimaryKey()),
             (new FkField('blog_id', 'blogId', GdnBlogPostDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             (new FkField('category_id', 'categoryId', GdnBlogCategoryDefinition::class))->addFlags(new PrimaryKey(), new Required()),
             new ManyToOneAssociationField('blog', 'blog_id', GdnBlogPostDefinition::class, 'id'),
