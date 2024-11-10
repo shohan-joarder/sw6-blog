@@ -221,7 +221,9 @@ img,svg{
   text-decoration: none;
 }
 .blog-card .date_area .user_icon {
-  max-width: 24px;
+ width: 24px;
+  height: 24px;
+  border-radius: 50%;
 }
 .blog-card .date_area h5 {
   color: rgba(33, 33, 33, 0.6);
@@ -647,12 +649,12 @@ img,svg{
 }
 
 
-.related-article-item{
-  .col-lg-4  {
-    width: 100%;
-    flex: none;
-  }
-}
+// .relate_article_bootstrap{
+//   .col-lg-4  {
+//     // width: 100%;
+//     flex: none;
+//   }
+// }
 
 
 
