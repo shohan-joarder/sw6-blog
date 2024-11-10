@@ -1,12 +1,9 @@
-{% block cms_block_latest_blogs %}
-<div class="container">
-    <h2>Latest Blogs</h2>
-    {{dump(latestBlogs)}}
-        <div class="blog-item" v-for="item in latestBlogs">
-            <p><strong>Customer:</strong> {{ item.customer }}</p>
-            <p><strong>ID:</strong> {{ item.id }}</p>
-            <p><strong>Quantity:</strong> {{ item.quantity }}</p>
-            <p><strong>Price:</strong> ${{ item.price }}</p>
-        </div>
+{% block sw_cms_block_latest_blogs %}
+<div class="container latestBlogs py-5" id="">
+    <h2 class="text-center mb-0">Latest Blogs</h2>
+    <div class="latestBlogItems">
+        
+    </div>
 </div>
 {% endblock %}
+

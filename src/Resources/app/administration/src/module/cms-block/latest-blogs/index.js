@@ -3,11 +3,10 @@ import './preview';
 
 Shopware.Service('cmsService').registerCmsBlock({
     name: 'latest-blogs',
-    category: 'text-image',
+    category: 'text',
     label: 'Latest Blogs',
     component: 'sw-cms-block-latest-blogs',
     previewComponent: 'sw-cms-preview-latest-blogs',
-    configComponent: 'sw-cms-block-latest-blogs',
     config: {
         selectedBlogs: {
             source: "static",

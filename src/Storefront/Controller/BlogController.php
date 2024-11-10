@@ -20,12 +20,17 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\InFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotInFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\FieldSorting;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
+
 
 use Shopware\Core\Framework\Context;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Content\Product\ProductEntity;
+
+use Symfony\Component\Routing\RouterInterface;
 
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
@@ -39,8 +44,9 @@ class BlogController extends StorefrontController
     private MediaService $mediaService;
     private EntityRepository $productRepository;
     private EntityRepository $mediaRepository;
+    private RouterInterface $router;
 
-    public function __construct(GenericPageLoaderInterface $genericPageLoader,SystemConfigService $systemConfigService,EntityRepository $blogRepository,EntityRepository $categoryRepository,EntityRepository $authorRepository,MediaService $mediaService,EntityRepository $productRepository,EntityRepository $mediaRepository)
+    public function __construct(GenericPageLoaderInterface $genericPageLoader,SystemConfigService $systemConfigService,EntityRepository $blogRepository,EntityRepository $categoryRepository,EntityRepository $authorRepository,MediaService $mediaService,EntityRepository $productRepository,EntityRepository $mediaRepository,RouterInterface $router)
     {
         $this->genericPageLoader = $genericPageLoader;
         $this->systemConfigService = $systemConfigService;
@@ -50,6 +56,7 @@ class BlogController extends StorefrontController
         $this->mediaService = $mediaService;
         $this->productRepository = $productRepository;
         $this->mediaRepository = $mediaRepository;
+        $this->router = $router;
     }
 
     #[Route(
@@ -59,6 +66,7 @@ class BlogController extends StorefrontController
     )]
     public function allBlogs(Request $request, SalesChannelContext $context, ?string $category_slug = null): Response
     {
+        
         // Fetch configuration values
         $pageTitle = $this->systemConfigService->get("GdnBlog.config.pagetitle");
         $itemPerPage = (int) $this->systemConfigService->get('GdnBlog.config.itemPerPage');
@@ -123,13 +131,20 @@ class BlogController extends StorefrontController
         // Calculate the offset for pagination
         $offset = ($page - 1) * $itemPerPage;
 
+        $searchTerm = $request->get('search');
         // Create criteria to fetch all blog entries
         $criteria = new Criteria();
         $criteria->addAssociation('media');
         $criteria->addAssociation('postCategories');
         $criteria->addAssociation('postAuthor.media');
+
+        if (!empty($searchTerm)) {
+            $criteria->addFilter(new ContainsFilter('title', $searchTerm));
+        }
+
         $criteria->setLimit($itemPerPage);
         $criteria->setOffset($offset);
+        
         $criteria->addFilter(new EqualsFilter('active', true));
         // Get the current date
         $currentDate = (new \DateTime())->format('Y-m-d H:i:s'); // Current date and time
@@ -363,6 +378,100 @@ class BlogController extends StorefrontController
             'page' => $pageInfo
         ]);
     }
+
+    #[Route(
+        path: '/latest-blog',
+        name: 'frontend.latest-blog',
+        methods: ['GET']
+    )]
+    public function latestBlog(Request $request): Response
+    {
+        $context = Context::createDefaultContext();
+
+        // Fetch latest blog posts, limited to 5 posts
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('active', true));
+        // Get the current date
+        $currentDate = (new \DateTime())->format('Y-m-d H:i:s'); // Current date and time
+        // Create a range filter for publishedAt
+        $rangeFilter = new RangeFilter('publishedAt', [
+            'lte' => $currentDate // 'lte' means less than or equal to
+        ]);
+        // Add the range filter
+        $criteria->addFilter($rangeFilter);
+
+        $criteria->addAssociation('media');
+        $criteria->addAssociation('postAuthor.media');
+        $criteria->setLimit(3);
+        // $criteria->addSorting(new FieldSorting('published_at', FieldSorting::DESCENDING));
+
+        $latestBlogs = $this->blogRepository->search($criteria, $context)->getEntities();
+
+        // Convert to array format to use in JSON response
+        $blogsArray = [];
+        foreach ($latestBlogs as $blog) {
+            $formattedDate = $blog->getPublishedAt() ? $blog->getPublishedAt()->format('F j, Y') : null;
+            $blogsArray[] = [
+                'id' => $blog->getId(),
+                'details_url'=>  $this->router->generate('frontend.blog.details', [
+                    'slug' => $blog->getSlug()  // Assuming the `slug` is the correct parameter
+                ]),
+                'title' => $blog->getTitle(),
+                'short_description' => $blog->getShortDescription(),
+                'publishedAt' => $formattedDate,
+                'media' => $blog->media ? [
+                    'id' => $blog->media->getId(),
+                    'url' => $blog->media->getUrl(),
+                ] : null,
+                'postAuthor' => [
+                    'name' => $blog->postAuthor? $blog->postAuthor->getName() : null,
+                    'media' => $blog->postAuthor && $blog->postAuthor->media ? [
+                        'id' => $blog->postAuthor->media->getId(),
+                        'url' => $blog->postAuthor->media->getUrl(),
+                    ] : null,
+                ],
+            ];
+        }
+
+        // Return the latest blogs as a JSON response
+        return new Response(
+            json_encode(['latest_blogs' => $blogsArray]),
+            Response::HTTP_OK,
+            ['Content-Type' => 'application/json']
+        );
+    }
+    #[Route(
+        path: '/search-blog',
+        name: 'frontend.search-blog',
+        methods: ['POST']
+    )]
+    public function searchBlog(Request $request): Response
+    {
+        // Retrieve search term from request
+        $searchTerm = $request->request->get('searchTerm');
+        
+        // Check if the search term is provided
+        if (empty($searchTerm)) {
+            return new Response(json_encode(['count' => 0]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
+        }
+
+        // Create criteria for searching blog posts
+        $criteria = new Criteria();
+        $criteria->addFilter(new ContainsFilter('title', $searchTerm));
+
+        // Search for matching blog posts
+        $context = Context::createDefaultContext();
+        $result = $this->blogRepository->search($criteria, $context);
+        
+        // Get the count of matching blog posts
+        $count = $result->getTotal();
+        
+        // Return the count as a JSON response
+        return new Response(json_encode(['count' => $count,'sarch_url'=>  $this->router->generate('frontend.blog', [
+            'search' => $searchTerm  // Assuming the `slug` is the correct parameter
+        ]),]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
+    }
+
 
     private function getRelatedBlogsByCategory(string $categoryId, SalesChannelContext $salesChannelContext): array
     {
