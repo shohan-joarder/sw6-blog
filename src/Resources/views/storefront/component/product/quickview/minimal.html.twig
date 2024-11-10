@@ -1,0 +1,240 @@
+{% sw_extends '@Storefront/storefront/component/product/quickview/minimal.html.twig' %}
+
+{% block component_product_quickview_minimal %}
+    {% set name = page.product.translated.name %}
+    {% set manufacturer = page.product.manufacturer %}
+
+    <div class="quickview-minimal-container container">
+        {% block component_product_quickview_minimal_top %}
+            <div class="row quickview-minimal-top">
+                {% block component_product_quickview_minimal_img %}
+                    <div class="col-12 col-lg-6 quickview-minimal-image">
+                        {% if page.product.media %}
+                            {% set mediaItems = page.product.media.media %}
+                            {% sw_include '@Storefront/storefront/element/cms-element-image-gallery.html.twig' with {
+                                'mediaItems': mediaItems,
+                                'zoom': true,
+                                'zoomModal': false,
+                                'displayMode': 'contain',
+                                'gutter': 5,
+                                'minHeight': '430px',
+                                'navigationArrows': 'inside',
+                                'navigationDots': 'inside',
+                                'galleryPosition': 'left',
+                                'isProduct': true,
+                                'fallbackImageTitle': page.product.translated.name,
+                                'startIndexThumbnails': page.product.cover.position + 1,
+                                'startIndexSlider': page.product.cover.position + 1
+                            } %}
+                        {% endif %}
+                    </div>
+                {% endblock %}
+
+                {% block component_product_quickview_minimal_product %}
+                    <div class="col-12 col-lg-6 quickview-minimal-product js-magnifier-zoom-image-container">
+                        <div class="row align-items-center product-detail-headline">
+                            <div class="col-12 product-detail-review-container">
+                                <span class="product-detail-reviews">
+                                    {% if page.product.ratingAverage %}
+                                        {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                                            points: page.product.ratingAverage,
+                                            style: 'text-primary'
+                                        } %}
+                                    {% else %}
+                                        {% sw_include '@Storefront/storefront/component/review/rating.html.twig' with {
+                                            points: 0,
+                                            style: 'text-primary'
+                                        } %}
+                                    {% endif %}
+                                </span>
+                            </div>
+
+                            {% block component_product_quickview_minimal_product_name %}
+                                <div class="col product-detail-name-container">
+                                    <a href="{{ seoUrl('frontend.detail.page', {'productId': page.product.id}) }}"
+                                       title="{{ name }}"
+                                       class="h4 quickview-minimal-product-name">
+                                        {{ name }}
+                                    </a>
+                                </div>
+                            {% endblock %}
+
+                            {% block component_product_quickview_minimal_product_manufacturer %}
+                                {% if manufacturer %}
+                                    <div class="col-md-auto product-detail-manufacturer">
+                                        {{ parent() }}
+                                    </div>
+                                {% endif %}
+                            {% endblock %}
+                        </div>
+
+                        {% block component_product_quickview_minimal_product_number %}{% endblock %}
+
+                        {% block bc_component_product_quickview_minimal_product_description %}
+                            {% if page.product.translated.description %}
+                                <p class="quickview-minimal-product-short-description">
+                                    {{ (page.product.translated.description[:180]~ '...'|sw_sanitize)|raw }}
+                                </p>
+                            {% endif %}
+                        {% endblock %}
+
+                        <div class="quickview-minimal-product-price">
+                            {% block bc_component_product_quickview_minimal_product_price_unit %}
+                                {% sw_include '@Storefront/storefront/component/product/card/price-unit.html.twig' with{
+                                    product: page.product
+                                } %}
+                            {% endblock %}
+
+                            {% block bc_component_product_quickview_minimal_product_tax %}
+                                <div class="product-detail-tax-container">
+                                    {% if context.taxState == "gross" %}
+                                        {% set taxText = "general.grossTaxInformation"|trans|sw_sanitize %}
+                                    {% else %}
+                                        {% set taxText = "general.netTaxInformation"|trans|sw_sanitize %}
+                                    {% endif %}
+
+                                    <p class="product-detail-tax">
+                                        {% block bc_component_product_quickview_minimal_product_tax_link %}
+                                            <a class="product-detail-tax-link"
+                                               href="{{ path('frontend.cms.page',{ id: config('core.basicInformation.shippingPaymentInfoPage') }) }}"
+                                               title="{{ taxText }}"
+                                               data-toggle="modal"
+                                               data-url="{{ path('frontend.cms.page',{ id: config('core.basicInformation.shippingPaymentInfoPage') }) }}">
+                                                {{ taxText }}
+                                            </a>
+                                        {% endblock %}
+                                    </p>
+                                </div>
+                            {% endblock %}
+
+                            {% block bc_component_product_quickview_minimal_product_delivery_informations %}
+                                <div class="product-detail-delivery-information">
+                                    {% sw_include '@Storefront/storefront/component/delivery-information.html.twig' %}
+                                </div>
+                            {% endblock %}
+                        </div>
+
+                        {% set id = page.product.id %}
+                        <div class="quickview-minimal-product-action">
+                            {% set isAvailable = not page.product.isCloseout or (page.product.availableStock >= page.product.minPurchase) %}
+                            {% set displayFrom = page.product.calculatedPrices.count > 1 %}
+                            {% set displayBuyButton = isAvailable and not displayFrom and page.product.childCount <= 0 %}
+
+                            {% if displayBuyButton %}
+                                <form action="{{ path('frontend.checkout.line-item.add') }}"
+                                      method="post"
+                                      class="buy-widget"
+                                      data-add-to-cart="true">
+
+                                    {% block bc_component_product_quickview_minimal_form %}
+                                        <input type="hidden"
+                                                name="redirectTo"
+                                                value="frontend.checkout.cart.page"/>
+
+                                        <input type="hidden"
+                                               name="redirectParameters"
+                                               data-redirect-parameters="true"
+                                               value='{"productId": "{{ page.product.id }}"}' />
+                                    {% endblock %}
+
+                                    {% block bc_component_product_quickview_minimal_buy_info %}
+                                        <input type="hidden"
+                                               name="lineItems[{{ id }}][id]"
+                                               value="{{ id }}" />
+                                        <input type="hidden"
+                                               name="lineItems[{{ id }}][referencedId]"
+                                               value="{{ id }}" />
+                                        <input type="hidden"
+                                               name="lineItems[{{ id }}][type]"
+                                               value="product" />
+                                        <input type="hidden"
+                                               name="lineItems[{{ id }}][stackable]"
+                                               value="1" />
+                                        <input type="hidden"
+                                               name="lineItems[{{ id }}][removable]"
+                                               value="1" />
+                                        <input type="hidden"
+                                               name="lineItems[{{ id }}][quantity]"
+                                               value="{{ page.product.minPurchase }}" />
+                                    {% endblock %}
+
+                                    {% block bc_component_product_quickview_minimal_buy_container %}
+
+                                        {% if theme_config('zen-buy-quantity-style') is same as ('input') %}
+                                            {% set quantityGridClasses = 'col-5' %}
+                                            {% set btnGridClasses = 'col-7' %}
+                                        {% else %}
+                                            {% set quantityGridClasses = 'col-4' %}
+                                            {% set btnGridClasses = 'col-8' %}
+                                        {% endif %}
+
+                                        <div class="row g-2 buy-widget-container">
+                                            {% block bc_component_product_quickview_minimal_buy_quantity_container %}
+                                                <div class="col-4 d-flex justify-content-end">
+                                                    {% set selectQuantityThreshold = 100 %}
+                                                    {% block page_product_detail_buy_quantity %}
+                                                        {% block page_product_detail_buy_quantity_input_group %}
+                                                            <div class="input-group product-detail-quantity-group quantity-selector-group" data-quantity-selector="true">
+                                                                {% block page_product_detail_buy_quantity_input %}
+                                                                    <button type="button" class="btn btn-outline-light btn-minus js-btn-minus">
+                                                                        {% sw_icon 'minus' style {'size': 'xs'} %}
+                                                                    </button>
+                                                                    <input
+                                                                        type="number"
+                                                                        name="lineItems[{{ id }}][quantity]"
+                                                                        class="form-control js-quantity-selector quantity-selector-group-input product-detail-quantity-input"
+                                                                        min="{{ page.product.minPurchase }}"
+                                                                        max="{{ page.product.calculatedMaxPurchase }}"
+                                                                        step="{{ page.product.purchaseSteps }}"
+                                                                        value="{{ page.product.minPurchase }}"
+                                                                    />
+                                                                    <button type="button" class="btn btn-outline-light btn-plus js-btn-plus">
+                                                                        {% sw_icon 'plus' style {'size': 'xs'} %}
+                                                                    </button>
+                                                                {% endblock %}
+                                                                {% block page_product_detail_buy_quantity_input_unit %}
+                                                                    {% if page.product.translated.packUnit %}
+                                                                        <span class="input-group-text">
+                                                                            {% if page.product.minPurchase > 1 and page.product.translated.packUnitPlural %}
+                                                                                {{ page.product.translated.packUnitPlural }}
+                                                                            {% elseif page.product.translated.packUnit %}
+                                                                                {{ page.product.translated.packUnit }}
+                                                                            {% endif %}
+                                                                        </span>
+                                                                    {% endif %}
+                                                                {% endblock %}
+                                                            </div>
+                                                        {% endblock %}
+                                                    {% endblock %}
+                                                </div>
+                                            {% endblock %}
+
+                                            <div class="{{ btnGridClasses }}">
+                                                <button class="btn btn-block btn-buy quickViewBuyBtn"
+                                                        title="{{ "listing.boxAddProduct"|trans|striptags }}">
+                                                         {{ "BrandCrockAquaTheme.listinglpage.quickview.lable"|trans|sw_sanitize }} {% sw_icon 'bag' %}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    {% endblock %}
+                                </form>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endblock %}
+            </div>
+        {% endblock %}
+
+        {% block component_product_quickview_minimal_footer %}
+            <div class="quickview-minimal-footer">
+                {% block bc_component_product_quickview_minimal_action_detail %}
+                    <a href="{{ seoUrl('frontend.detail.page', {'productId': page.product.id}) }}"
+                       class="btn btn-block btn-light btn-details"
+                       title="{{ "listing.boxProductDetails"|trans|striptags }}">
+                        {{ "listing.boxProductDetails"|trans|sw_sanitize }}
+                    </a>
+                {% endblock %}
+            </div>
+        {% endblock %}
+    </div>
+{% endblock %}

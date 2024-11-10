@@ -1,0 +1,88 @@
+{% sw_extends '@Storefront/storefront/component/product/card/action.html.twig' %}
+
+{% block component_product_box_action_inner %}
+
+	{% set id = product.id %}
+	<div class="product-action">
+		{% set isAvailable = not product.isCloseout or (product.availableStock >= product.minPurchase) %}
+		{% set displayFrom = product.calculatedPrices.count > 1 %}
+		{% set displayBuyButton = isAvailable and not displayFrom and product.childCount <= 0 %}
+
+		{% if displayBuyButton and config('core.listing.allowBuyInListing') %}
+			{% block component_product_box_action_buy %}
+				{# @var product \Shopware\Core\Content\Product\SalesChannel\SalesChannelProductEntity #}
+				<form action="{{ path('frontend.checkout.line-item.add') }}" method="post" class="buy-widget" data-add-to-cart="true">
+
+					{% block component_product_box_action_form %}
+
+						{% block component_product_box_action_buy_redirect_input %}
+							{# fallback redirect back to detail page is deactivated via js #}
+							<input type="hidden" name="redirectTo" value="frontend.detail.page">
+
+							<input type="hidden" name="redirectParameters" data-redirect-parameters="true" value='{"productId": "{{ product.id }}"}'>
+						{% endblock %}
+
+						{% block page_product_detail_buy_product_buy_info %}
+							<input type="hidden" name="lineItems[{{ id }}][id]" value="{{ id }}">
+							<input type="hidden" name="lineItems[{{ id }}][referencedId]" value="{{ id }}">
+							<input type="hidden" name="lineItems[{{ id }}][type]" value="product">
+							<input type="hidden" name="lineItems[{{ id }}][stackable]" value="1">
+							<input type="hidden" name="lineItems[{{ id }}][removable]" value="1">
+							<input type="hidden" name="lineItems[{{ id }}][quantity]" value="{{ product.minPurchase }}">
+						{% endblock %}
+
+						{% block page_product_detail_product_buy_meta %}
+							<input type="hidden" name="product-name" value="{{ product.translated.name }}">
+						{% endblock %}
+
+						{% block page_product_detail_product_buy_button %}
+							<div class="d-grid">
+								<button
+									class="btn btn-buy" title="{{ " listing.boxAddProduct"|trans|striptags }}">
+									<svg class="user_icon" id="Component_1_1" data-name="Component 1 – 1" xmlns="http://www.w3.org/2000/svg" width="22" height="17.583" viewbox="0 0 22 17.583">
+										<path id="Path_46" data-name="Path 46" d="M8.31,15.319a.354.354,0,1,1,0-.707h2.652a.354.354,0,0,1,0,.707ZM14.6,23.227h9.481A2.3,2.3,0,0,0,26.3,21.589l1.8-5.848a.615.615,0,0,0-.572-.842H13.372L12.7,12.129a1.312,1.312,0,0,0-1.282-1.011h-1.4a.615.615,0,1,0,0,1.23h1.4a.087.087,0,0,1,.091.07l2.343,9.706a2.3,2.3,0,0,0,.64,4.467q0,.049,0,.1a2.012,2.012,0,0,0,4.024,0c0-.032,0-.064,0-.1H21.94q0,.048,0,.1a2.012,2.012,0,1,0,.5-1.325H18.019a2.012,2.012,0,0,0-3.028,0H14.6a1.068,1.068,0,0,1,0-2.136Zm-.463-5.445a.3.3,0,0,0-.071.008l-.4-1.663H17v1.654ZM15.086,22l-.4-1.654H17V22ZM17,19.739H14.612a.3.3,0,0,0-.069.008l-.328-1.36H17v1.352Zm.6-1.956V16.128h2.216v1.654Zm0,1.956V18.387h2.216v1.352Zm2.821-1.956V16.128h2.216v1.654Zm0,1.956V18.387h2.216v1.352Zm2.821-1.956V16.128H26.7L26.19,17.8a.3.3,0,0,0-.089-.013ZM17.6,22V20.343h2.216V22Zm5.641-2.259V18.387h2.763l-.421,1.365a.3.3,0,0,0-.089-.013ZM20.423,22V20.343h2.216V22Zm2.821,0V20.343H25.4l-.273.885A1.068,1.068,0,0,1,24.086,22h-.842Zm-.113,4.691a.819.819,0,1,1,.819.819A.819.819,0,0,1,23.131,26.688Zm-6.626-.819a.819.819,0,1,1-.819.819A.819.819,0,0,1,16.505,25.869ZM8,19.022a.354.354,0,1,1,0-.707h3.656a.354.354,0,1,1,0,.707ZM6.5,17.171a.354.354,0,1,1,0-.707H9.381a.354.354,0,1,1,0,.707Z" transform="translate(-6.15 -11.118)" fill="#3d3d3d" fill-rule="evenodd"/>
+									</svg>
+								</button>
+							</div>
+						{% endblock %}
+					{% endblock %}
+				</form>
+			{% endblock %}
+		{% else %}
+			{% block component_product_box_action_detail %}
+				<div class="d-grid">
+					<a
+						href="{{ seoUrl('frontend.detail.page', {'productId': id}) }}" class="btn btn-light" title="{{ " listing.boxProductDetails"|trans|striptags }}">
+						<svg version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewbox="0 0 472.616 472.616" style="enable-background:new 0 0 472.616 472.616;" xml:space="preserve">
+							<g>
+								<g>
+									<path d="M471.293,231.377c-23.427-40.494-57.113-74.458-97.417-98.217c-41.529-24.481-89.099-37.421-137.567-37.421
+												c-48.468,0-96.039,12.94-137.568,37.421c-40.304,23.76-73.99,57.723-97.416,98.217c-1.764,3.051-1.764,6.811,0,9.862
+												c23.426,40.495,57.112,74.459,97.416,98.217c41.53,24.482,89.1,37.422,137.568,37.422c48.468,0,96.038-12.94,137.567-37.422
+												c40.304-23.759,73.99-57.722,97.417-98.217C473.057,238.187,473.057,234.428,471.293,231.377z M363.875,322.492
+												c-38.502,22.696-82.613,34.693-127.567,34.693c-44.954,0-89.066-11.997-127.567-34.693c-35.742-21.07-65.874-50.79-87.443-86.185
+												c21.569-35.394,51.701-65.114,87.443-86.184c38.501-22.696,82.613-34.693,127.567-34.693c44.954,0,89.065,11.997,127.567,34.693
+												c35.741,21.07,65.873,50.789,87.443,86.184C429.748,271.702,399.617,301.422,363.875,322.492z"/>
+								</g>
+							</g>
+							<g>
+								<g>
+									<path d="M236.308,147.832c-48.786,0-88.475,39.689-88.475,88.475c0,48.786,39.689,88.476,88.475,88.476
+												c48.786,0,88.476-39.69,88.476-88.476C324.784,187.522,285.093,147.832,236.308,147.832z M236.308,305.091
+												c-37.927,0-68.783-30.856-68.783-68.784c0-37.927,30.856-68.783,68.783-68.783c37.928,0,68.784,30.856,68.784,68.783
+												C305.092,274.235,274.236,305.091,236.308,305.091z"/>
+								</g>
+							</g>
+						</svg>
+
+					</a>
+				</div>
+			{% endblock %}
+		{% endif %}
+	</div>
+	{% block component_product_box_action_meta %}
+		<input type="hidden" name="product-name" value="{{ product.translated.name }}">
+
+		<input type="hidden" name="product-id" value="{{ id }}">
+	{% endblock %}
+{% endblock %}
