@@ -5,9 +5,11 @@ import "./blog-post-create.scss"
 import deDE from './../../../../snippet/de-DE.json';
 import enGB from './../../../../snippet/en-GB.json';
 
-const { Component, Mixin,Context } = Shopware;
+const { Component, Mixin,Context,Application } = Shopware;
 
 const { Criteria } = Shopware.Data;
+
+const httpClient = Application.getContainer('init').httpClient;
 
 Component.register('blog-post-create', {
     
@@ -229,10 +231,18 @@ Component.register('blog-post-create', {
                         // Fetch all items that match the criteria
                         const itemsToDelete = await blogRepository.search(criteria, Shopware.Context.api);
 
+                        console.log(itemsToDelete);
+
                         if (itemsToDelete.total > 0) {
-                            for (const item of itemsToDelete) {
-                                // Attempt to delete by the unique id
-                                await blogRepository.delete(item.id, Shopware.Context.api);
+                            for (const BCitem of itemsToDelete) {
+
+                                httpClient.get('/api/gdn-blog-post-gdn')
+                                    .then((response) => {
+                                        console.log('API Response:', response.data);
+                                    })
+                                    .catch((error) => {
+                                        console.error('API Error:', error);
+                                    });
                             }
                         }
 
@@ -245,7 +255,6 @@ Component.register('blog-post-create', {
                 for (const category of categories) {
                     const categoryBlogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
                     const newItem = categoryBlogRepository.create();
-                    newItem.id=null,
                     newItem.categoryId = category;
                     newItem.blogId = this.createdId;
 

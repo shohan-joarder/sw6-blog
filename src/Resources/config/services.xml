@@ -45,5 +45,16 @@
             <tag name="shopware.entity.definition" entity="gdn_blog_post_gdn_blog_category" />
         </service>
 
+        <service id="Gdn\GdnBlog\Core\Content\Example\SalesChannel\CustomApiRoute" public="true">
+            <!-- <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\EntityRepository"/> -->
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+            <call method="setTwig">
+                <argument type="service" id="twig"/>
+            </call>
+        </service>
+
+
     </services>
 </container>
