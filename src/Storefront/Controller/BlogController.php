@@ -3,34 +3,24 @@
 namespace Gdn\GdnBlog\Storefront\Controller;
 
 use DOMDocument;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Content\Media\MediaService;
+use Symfony\Component\Routing\RouterInterface;
+use Shopware\Core\Content\Product\ProductEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Shopware\Storefront\Page\GenericPageLoaderInterface;
 use Shopware\Storefront\Controller\StorefrontController;
 use Shopware\Core\System\SalesChannel\SalesChannelContext;
 use Shopware\Core\System\SystemConfig\SystemConfigService;
-use Shopware\Core\Content\Product\ProductRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\InFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotInFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
-
-
-use Shopware\Core\Framework\Context;
-use Symfony\Component\HttpFoundation\RedirectResponse;
-
-use Shopware\Core\Content\Media\MediaService;
-use Shopware\Core\Content\Product\ProductEntity;
-
-use Symfony\Component\Routing\RouterInterface;
 
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
@@ -72,7 +62,6 @@ class BlogController extends StorefrontController
         $itemPerPage = (int) $this->systemConfigService->get('GdnBlog.config.itemPerPage');
         $shortDescription = $this->systemConfigService->get('GdnBlog.config.shortDescription');
         $description = $this->systemConfigService->get('GdnBlog.config.description');
-
         $metaTitle = $this->systemConfigService->get('GdnBlog.config.metaTitle');
         $metaDescription = $this->systemConfigService->get('GdnBlog.config.metaDescription');
         $metaKeywards = $this->systemConfigService->get('GdnBlog.config.metaKeywards');
@@ -93,7 +82,6 @@ class BlogController extends StorefrontController
 
             }
         }
-
 
         if($category_slug){
             $findCategory = new Criteria();
@@ -126,7 +114,8 @@ class BlogController extends StorefrontController
         // Get current page number from request parameters
         $page = (int) $request->query->get('page', 1); // Default to page 1
 
-        $itemPerPage = $itemPerPage ?? 9; // Default to 9 if not set
+        // Default to 9 if not set
+        $itemPerPage = $itemPerPage ?? 9; 
 
         // Calculate the offset for pagination
         $offset = ($page - 1) * $itemPerPage;
@@ -179,22 +168,7 @@ class BlogController extends StorefrontController
         $totalPages = (int) ceil($totalBlogs / $itemPerPage); // Calculate based on actual total blogs
         $paginationPages = array_fill(1, $totalPages, true); // Create an array for pagination
 
-        // Fetch categories
-        $categoryCriteria = new Criteria();
-        $categoryCriteria->setLimit(100); // Adjust this limit if needed
-        $categories = $this->categoryRepository->search($categoryCriteria, $context->getContext());
-
-        // Extract unique categories
-        $uniqueCategories = [];
-        foreach ($categories->getEntities() as $category) {
-            if (!isset($uniqueCategories[$category->getId()])) {
-                $uniqueCategories[$category->getId()] = [
-                    'id' => $category->getId(),
-                    'name' => $category->getName(),
-                    'slug' => $category->getSlug(),
-                ];
-            }
-        }
+        $categories = $this->getCategories($context->getContext());
 
         // Prepare blog data
         $blogs = [];
@@ -229,7 +203,7 @@ class BlogController extends StorefrontController
                 "shortDescription" => $shortDescription,
                 "description" => $description,
             ],
-            'categories' => $uniqueCategories,
+            'categories' => $categories,
             'banner'=>$banner,
             'category_slug'=>$category_slug
         ]);
@@ -295,6 +269,7 @@ class BlogController extends StorefrontController
             return $category->getId();
         });
 
+
         // Fetch related blogs for each category
         $relatedBlogs = [];
         foreach ($categoryIds as $categoryId) {
@@ -310,41 +285,22 @@ class BlogController extends StorefrontController
 
         // Make table of content
         $description = $blogPost->getDescription();
-        $dom = new DOMDocument();
-        @$dom->loadHTML('<?xml encoding="UTF-8">' . $description);
-        $toc = [];
+        
+        // generate table of content
+        $contentWithToc = $this->makeToc($description);
 
-        foreach (['h2', 'h3'] as $tag) {
-            $elements = $dom->getElementsByTagName($tag);
-            foreach ($elements as $element) {
-                $textContent = $element->textContent;
-                $id = $element->getAttribute('id') ?: str_replace(' ', '-', strtolower($textContent));
-
-                // Add id to the element if it doesn't have one
-                if (!$element->getAttribute('id')) {
-                    $element->setAttribute('id', $id);
-                }
-
-                // Add this heading to the TOC array
-                $toc[] = [
-                    'level' => $tag,
-                    'text' => $textContent,
-                    'id' => $id
-                ];
-            }
-        }
-        $modifiedContent = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
-
+        // get categories
+        $categories = $this->getCategories($context->getContext());
 
         // Prepare the blog details data
         $blogDetails = [
             'id' => $blogPost->getId(),
             'title' => $blogPost->getTitle(),
-            'toc'=>$toc,
+            'toc'=>$contentWithToc["toc"],
             'slug' => $blogPost->getSlug(),
             'publishedAt' => $blogPost->getPublishedAt(),
             'short_description' => $blogPost->getShortDescription(),
-            'description' => $modifiedContent,//$blogPost->getDescription(),
+            'description' => $contentWithToc["content"],
             'tags'=>$blogPost->getTags(),
             'tagsName'=>$blogPost->getTagsName(),
             'media' => $blogPost->media ? [
@@ -358,19 +314,10 @@ class BlogController extends StorefrontController
                     'url' => $blogPost->postAuthor->media->getUrl(),
                 ] : null,
             ],
-            'categories' => $blogPost->postCategories? array_map(function ($category) {
-                return [
-                    'id' => $category->getId(),
-                    'name' => $category->getName(),
-                    'slug' => $category->getSlug(),
-                ];
-            }, $blogPost->postCategories ->getElements()) : [],
-
+            'categories' => $categories,
             "relatedProducts"=>$relatedProducts,
             "relatedBlogs"=>$relatedBlogs
         ];
-
-        // dd($appUrl);
 
         // Render the blog details template
         return $this->renderStorefront('@GdnGdnblog/storefront/page/blog_detail.html.twig', [
@@ -472,6 +419,61 @@ class BlogController extends StorefrontController
         ]),]), Response::HTTP_OK, ['Content-Type' => 'application/json']);
     }
 
+    private function getCategories($getContext){
+        // Fetch categories
+        $categoryCriteria = new Criteria();
+        $categoryCriteria->setLimit(100);
+        $categories = $this->categoryRepository->search($categoryCriteria, $getContext);
+
+        // Extract unique categories
+        $uniqueCategories = [];
+        foreach ($categories->getEntities() as $category) {
+            if (!isset($uniqueCategories[$category->getId()])) {
+                $uniqueCategories[$category->getId()] = [
+                    'id' => $category->getId(),
+                    'name' => $category->getName(),
+                    'slug' => $category->getSlug(),
+                ];
+            }
+        }
+
+        return $uniqueCategories;
+    }
+
+    private function makeToc($content){
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<?xml encoding="UTF-8">' . $content);
+        $toc = [];
+
+        foreach (['h2', 'h3'] as $tag) {
+            $elements = $dom->getElementsByTagName($tag);
+            foreach ($elements as $element) {
+                $textContent = $element->textContent;
+                $id = $element->getAttribute('id') ?: str_replace(' ', '-', strtolower($textContent));
+
+                // Add id to the element if it doesn't have one
+                if (!$element->getAttribute('id')) {
+                    $element->setAttribute('id', $id);
+                }
+
+                // Add this heading to the TOC array
+                $toc[] = [
+                    'level' => $tag,
+                    'text' => $textContent,
+                    'id' => $id
+                ];
+            }
+        }
+        $modifiedContent = $dom->saveHTML($dom->getElementsByTagName('body')->item(0));
+
+        $data = [
+            "toc"=>$toc,
+            "content"=>$modifiedContent
+        ];
+
+        return $data;
+
+    }
 
     private function getRelatedBlogsByCategory(string $categoryId, SalesChannelContext $salesChannelContext): array
     {
@@ -525,7 +527,6 @@ class BlogController extends StorefrontController
             ];
         });
     }
-
 
     private function getProductsByTag(string $tagId, array $existingProductIds,SalesChannelContext $salesChannelContext,$appUrl): array
     {
