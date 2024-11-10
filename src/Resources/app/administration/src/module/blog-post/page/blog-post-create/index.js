@@ -249,6 +249,7 @@ Component.register('blog-post-create', {
                 for (const category of categories) {
                     const categoryBlogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
                     const newItem = categoryBlogRepository.create();
+                    newItem.id=null,
                     newItem.categoryId = category;
                     newItem.blogId = this.createdId;
 
