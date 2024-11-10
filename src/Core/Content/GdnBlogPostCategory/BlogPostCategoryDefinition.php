@@ -22,15 +22,15 @@ class BlogPostCategoryDefinition extends MappingEntityDefinition
         return self::ENTITY_NAME;
     }
 
-    // public function getCollectionClass(): string
-    // {
-    //     return BlogPostCategoryCollection::class;
-    // }
+    public function getCollectionClass(): string
+    {
+        return BlogPostCategoryCollection::class;
+    }
 
-    // public function getEntityClass(): string
-    // {
-    //     return BlogPostCategoryEntity::class;
-    // }
+    public function getEntityClass(): string
+    {
+        return BlogPostCategoryEntity::class;
+    }
 
     protected function defineFields(): FieldCollection
     {
