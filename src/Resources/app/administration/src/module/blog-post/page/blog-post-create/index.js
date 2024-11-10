@@ -32,7 +32,7 @@ Component.register('blog-post-create', {
                 shortDescription: '',
                 description: '',
                 publishedAt:'',
-                active: false,
+                active: true,
                 mediaId:null,
                 authorId:null,
                 categoryIds:[],

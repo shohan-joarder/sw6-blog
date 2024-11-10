@@ -24,7 +24,7 @@ Component.register('blog-category-create', {
                 slug: '',
                 description: '',
                 shortDescription: '',
-                active: false,
+                active: true,
                 mediaId:null,
                 meta_title:"",
                 meta_description:"",

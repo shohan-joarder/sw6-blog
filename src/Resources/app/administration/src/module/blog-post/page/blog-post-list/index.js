@@ -35,7 +35,7 @@ Component.register('blog-post-list', {
                 { property: 'title', label: 'Title',routerLink: 'blog.post.create', width: '200px' },
                 // { property: 'slug', label: 'Slug', width: '150px' },
                 { property: 'postAuthor.name', label: 'Author', width: '100px' },
-                { property: 'meta_title', label: 'Meta Title', width: '150px' }
+                // { property: 'meta_title', label: 'Meta Title', width: '150px' }
             ],
             entity:"gdn_blog_post",
             confirmModal:false
