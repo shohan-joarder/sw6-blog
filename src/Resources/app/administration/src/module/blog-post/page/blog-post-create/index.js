@@ -229,12 +229,10 @@ Component.register('blog-post-create', {
                         // Fetch all items that match the criteria
                         const itemsToDelete = await blogRepository.search(criteria, Shopware.Context.api);
 
-                        console.log(itemsToDelete);
-
                         if (itemsToDelete.total > 0) {
                             for (const item of itemsToDelete) {
-                                // Using both `blogId` and `categoryId` as a composite key to delete
-                                await blogRepository.delete([item.blogId, item.categoryId], Shopware.Context.api);
+                                // Attempt to delete by the unique id
+                                await blogRepository.delete(item.id, Shopware.Context.api);
                             }
                         }
 

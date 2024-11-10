@@ -20,10 +20,8 @@ class Migration1731220024Add_id_on_Blog_category extends MigrationStep
     public function update(Connection $connection): void
     {
         // drop table here
-        // if ($columnExists) {
             $queryDropTable = "DROP TABLE IF EXISTS `gdn_blog_post_gdn_blog_category`";
             $connection->executeStatement($queryDropTable);
-        // }
 
         $query = <<<SQL
             CREATE TABLE IF NOT EXISTS `gdn_blog_post_gdn_blog_category` (
