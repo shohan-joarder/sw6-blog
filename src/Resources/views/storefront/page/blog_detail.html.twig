@@ -2,37 +2,6 @@
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 
 
-
-{% block base_footer %}
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var swiper = new Swiper('.swiper', {
-                slidesPerView: 1,
-                spaceBetween: 10,
-                speed:1150,
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                breakpoints: {
-                    992: {
-                        slidesPerView: 3,
-                        slidesPerGroup:3,
-                        spaceBetween: 20,
-                    },
-                    768: {
-                        slidesPerView: 2,
-                        slidesPerGroup:2,
-                        spaceBetween: 20,
-                    },
-
-                }
-            });
-        });
-    </script>
-{% endblock %}
-
-
 {% block base_content %}
     {% block page_header %}
         <div class="blog_details_header_area">
@@ -128,25 +97,6 @@
     {% block related_article %}
         <div class="related_article ">
             <h5 class="related_details_title">{{ 'blog-details.title.relatedBlogTitle'|trans }}</h5>
-            <div class="related-article-item relate_article_bootstrap slider_arrow_area">
-                <!-- Swiper -->
-                <div class="swiper">
-                    <div class="swiper-wrapper">
-                        {% for relatedBlog in blog.relatedBlogs%}
-                            <div class="swiper-slide">
-                            {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
-                                blog:relatedBlog,
-                                thumb:defaultThmb
-                            } %}
-                            </div>
-                        {% endfor%}
-                    </div>
-                    <!-- Add Arrows -->
-                    <div class="swiper-button-next"></div>
-                    <div class="swiper-button-prev"></div>
-                </div>
-
-            </div>
             <div class="related-article-item">
                 <div class="row">
                     {% for relatedBlog in blog.relatedBlogs%}
@@ -158,8 +108,6 @@
 
                     {% endfor%}
                 </div>
-
-
             </div>
         </div>
     {% endblock %}
