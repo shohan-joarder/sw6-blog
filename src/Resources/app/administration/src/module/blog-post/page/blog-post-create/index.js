@@ -218,33 +218,31 @@ Component.register('blog-post-create', {
             const categories = this.item.categoryIds
             if (categories) {
                 const itemId = this.item.id;
-                // if(itemId){
+                if(itemId){
                     
-                //     try {
-                //         const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
-                        
-                //         const criteria = new Criteria();
-                //         criteria.addFilter(Shopware.Data.Criteria.equals('blogId', itemId));
-                //         const categoriesToDelete = await blogRepository.search(criteria, Shopware.Context.api);
-                //         console.log(categoriesToDelete);
-                //         return;
-                //         // try {               
+                    try {
+                        const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
 
-                //         //     await blogRepository.delete(itemId, Shopware.Context.api);
-                            
-                //         // } catch (error) {
-                //         //     console.log(error);
-                //         //     console.log("loaging")
-                //         //     return;
-                //         // }
+                        const criteria = new Criteria();
+                        criteria.addFilter(Criteria.equals('blogId', itemId));
 
-                //     } catch (error) {
-                //         console.log("Bulk delete error "+ error);
-                //     }
+                        // Fetch all items that match the criteria
+                        const itemsToDelete = await blogRepository.search(criteria, Shopware.Context.api);
 
-                    
+                        console.log(itemsToDelete);
 
-                // }
+                        if (itemsToDelete.total > 0) {
+                            for (const item of itemsToDelete) {
+                                // Using both `blogId` and `categoryId` as a composite key to delete
+                                await blogRepository.delete([item.blogId, item.categoryId], Shopware.Context.api);
+                            }
+                        }
+
+                    } catch (error) {
+                        console.log("Bulk delete error "+ error);
+                    }
+
+                }
 
                 for (const category of categories) {
                     const categoryBlogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
