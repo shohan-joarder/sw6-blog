@@ -205,7 +205,8 @@ class BlogController extends StorefrontController
             ],
             'categories' => $categories,
             'banner'=>$banner,
-            'category_slug'=>$category_slug
+            'category_slug'=>$category_slug,
+            'searchTerm'=>$searchTerm
         ]);
     }
 

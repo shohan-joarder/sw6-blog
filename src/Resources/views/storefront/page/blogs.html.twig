@@ -2,6 +2,13 @@
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 {% block base_content %}
 
+
+    {% if searchTerm is defined and searchTerm is not null and searchTerm != '' %}
+        
+        <h1 class="search-headline text-center mb-4"> Blog search result for  "{{searchTerm}}"</h1>
+    
+    {% else %}
+
     <h3 class="blog-page__title test text-center"> {{ 'blog-list.title.blogTitle'|trans }} </h3>
 
     <div class="category-area d-flex justify-content-center align-items-center  flex-wrap gap-2  text-center mb-3">
@@ -30,10 +37,14 @@
         </div>
     </div>
 
+
+    {% endif %}
+
     <div class="row g-4 mt-5">
         {% if blogs|length > 0  %}
         {%  sw_include '@GdnGdnblog/storefront/page/inc/pagination.htm.twig' with{
             paginationPages:paginationPages,
+            searchTerm:searchTerm
         } %}
         {% for blog in blogs %}
         {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
@@ -55,10 +66,12 @@
 
     </div>
 
+    {% if searchTerm is not defined or searchTerm is null or searchTerm == '' %}
     <div  id="description" class="bottom_description mt-5">
         <h5>{{title}}</h5>
         <p>{{page_info.description}}</p>
     </div>
+    {% endif %}
 
 
 {% endblock %}

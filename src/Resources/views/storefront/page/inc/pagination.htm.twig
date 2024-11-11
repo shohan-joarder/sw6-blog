@@ -1,6 +1,7 @@
 <div class="gdn-blog-posts">
     <div class="pages">
         <ul class="items pages-items" aria-labelledby="paging-label">
+
             {% set page = (app.request.get('page')|default(1)|format_number) %}
             {% set pageNext = page == 0 ? 2 : page + 1 %}
             {% set pagePrev = page - 1 %}
@@ -9,7 +10,7 @@
             {# Previous Button #}
             {% if pagePrev > 0 %}
                 <li class="item pages-item-previous">
-                    <a href="{{ app.request.uri ~ '?page=' ~ pagePrev }}" class="previous" aria-label="Previous">&lt; Previous</a>
+                    <a href="{{ app.request.uri ~ '?page=' ~ pagePrev ~ '&search=' ~ searchTerm}}" class="previous" aria-label="Previous">&lt; Previous</a>
                 </li>
             {% endif %}
 
@@ -20,7 +21,7 @@
                 {# Show first few pages, last few pages, and current/prev/next #}
                 {% if loopIndex <= 3 or loopIndex > paginationPages|length - 3 or (loopIndex == pagePrev) or (loopIndex == pageNext) %}
                     <li class="item {{ currentPage }}">
-                        <a href="{{ app.request.uri ~ '?page=' ~ loopIndex }}" class="page">
+                        <a href="{{ app.request.uri ~ '?page=' ~ loopIndex ~ '&search=' ~ searchTerm}}" class="page">
                             <span>{{ loopIndex }}</span>
                         </a>
                     </li>
@@ -34,7 +35,7 @@
             {# Next Button #}
             {% if paginationPages and max(pageKeys) >= pageNext %}
                 <li class="item pages-item-next">
-                    <a href="{{ app.request.uri ~ '?page=' ~ pageNext }}" class="next" aria-label="Next">Next &gt;</a>
+                    <a href="{{ app.request.uri ~ '?page=' ~ pageNext ~ '&search=' ~ searchTerm}}" class="next" aria-label="Next">Next &gt;</a>
                 </li>
             {% endif %}
             
