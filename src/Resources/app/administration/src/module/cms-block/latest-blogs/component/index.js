@@ -21,7 +21,16 @@ Shopware.Component.register('sw-cms-block-latest-blogs', {
     },
     methods: {
         getLatestBlogs() {
- 
+            
+            // Ensure `repository` and `criteria` are defined before using them.
+            const repository = Shopware.Service('repositoryFactory').create('gdn_blog_post');
+            const criteria = new Shopware.Data.Criteria();
+            criteria.addAssociation('postAuthor');
+            // Add filter to fetch only active blogs
+            criteria.addFilter(Criteria.equals('active', true));
+            // Adjust criteria settings as needed to limit or filter the latest blogs
+            criteria.addSorting(Criteria.sort('publishedAt', 'DESC'));
+
             repository.search(criteria, Shopware.Context.api).then((result) => {
                 // console.log(result);
 

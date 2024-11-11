@@ -145,7 +145,7 @@ searchElements.forEach(element => {
                     <li class="js-result search-suggest-total">
                         <div class="row align-items-center g-0">
                             <div class="col">
-                                <a href="${count > 0 && sarch_url}" title="Show all search results" class="search-suggest-total-link">
+                                <a href="${count > 0 ? sarch_url : "#"}" title="Show all search results" class="search-suggest-total-link">
                                     ${count > 0 ? count +" Blog found" : "No blog found"} 
                                 </a>
                             </div>
