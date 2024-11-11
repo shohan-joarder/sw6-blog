@@ -284,6 +284,9 @@ img,svg{
   border: 1px solid $sw-color-brand-primary;
   text-decoration: none;
   background-color: white;
+  @include max-media-width(767) {
+    height: 42px;
+  }
 }
 .blog-card .red_more_btn span {
   color: $sw-color-brand-primary;
