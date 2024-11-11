@@ -117,6 +117,7 @@ const doneTypingInterval = 500; // Time in milliseconds (1 second)
 
 searchElements.forEach(element => {
     element.addEventListener("keyup", function() {
+        console.log("Blog search calling")
         clearTimeout(typingTimer);  // Clear the previous timer on each keystroke
         typingTimer = setTimeout(async () => {
             
