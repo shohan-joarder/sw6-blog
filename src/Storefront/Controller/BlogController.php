@@ -98,7 +98,7 @@ class BlogController extends StorefrontController
             $pageTitle = $getCategoryData->getName();
             $shortDescription = $getCategoryData->getShortDescription();
             $description = $getCategoryData->getDescription();
-            // dd($description);
+            
             // Retrieve the banner URL if media is associated
             $banner = $getCategoryData->media ? $getCategoryData->media->getUrl() : null;
             $metaTitle = $getCategoryData->getMetaTitle();
@@ -555,8 +555,6 @@ class BlogController extends StorefrontController
                 new EqualsFilter('displayGroup', 'variant') // Select only one variant if present
             ]
         ));
-
-        // $criteria->setLimit(3); // Limit to 3 products
 
         // Use the base Context for the search
         $productEntities = $this->productRepository->search($criteria, $context)->getEntities();

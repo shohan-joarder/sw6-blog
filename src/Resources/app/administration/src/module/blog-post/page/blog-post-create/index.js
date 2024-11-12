@@ -222,33 +222,33 @@ Component.register('blog-post-create', {
                 const itemId = this.item.id;
                 if(itemId){
                     
-                    try {
-                        const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
+                    // try {
+                    //     const blogRepository = this.repositoryFactory.create("gdn_blog_post_gdn_blog_category");
 
-                        const criteria = new Criteria();
-                        criteria.addFilter(Criteria.equals('blogId', itemId));
+                    //     const criteria = new Criteria();
+                    //     criteria.addFilter(Criteria.equals('blogId', itemId));
 
-                        // Fetch all items that match the criteria
-                        const itemsToDelete = await blogRepository.search(criteria, Shopware.Context.api);
+                    //     // Fetch all items that match the criteria
+                    //     const itemsToDelete = await blogRepository.search(criteria, Shopware.Context.api);
 
-                        console.log(itemsToDelete);
+                    //     console.log(itemsToDelete);
 
-                        if (itemsToDelete.total > 0) {
-                            for (const BCitem of itemsToDelete) {
+                    //     if (itemsToDelete.total > 0) {
+                    //         for (const BCitem of itemsToDelete) {
 
-                                httpClient.get('/api/gdn-blog-post-gdn')
-                                    .then((response) => {
-                                        console.log('API Response:', response.data);
-                                    })
-                                    .catch((error) => {
-                                        console.error('API Error:', error);
-                                    });
-                            }
-                        }
+                    //             httpClient.get('/api/gdn-blog-post-gdn')
+                    //                 .then((response) => {
+                    //                     console.log('API Response:', response.data);
+                    //                 })
+                    //                 .catch((error) => {
+                    //                     console.error('API Error:', error);
+                    //                 });
+                    //         }
+                    //     }
 
-                    } catch (error) {
-                        console.log("Bulk delete error "+ error);
-                    }
+                    // } catch (error) {
+                    //     console.log("Bulk delete error "+ error);
+                    // }
 
                 }
 
