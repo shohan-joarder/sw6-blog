@@ -268,17 +268,8 @@ class BlogController extends StorefrontController
                 $relatedProducts = array_merge($getRelatedProduct,$relatedProducts);
 
             }
-            // if(count($getRelatedProduct) > 0){
-
-            //     foreach ($getRelatedProduct as $key => $relatedItem) {
-            //         $relatedProducts[$relatedItem["id"]] = $relatedItem;
-            //     }
-
-            // }
 
         }
-
-        // dd($relatedProducts);
 
         // Get the category IDs associated with the current blog post
         $categoryIds = $blogPost->postCategories->map(function ($category) {
@@ -585,7 +576,7 @@ class BlogController extends StorefrontController
             $mediaUrls = [];
             if ($product->getMedia() && count($product->getMedia()) > 0) {      
                 foreach ($product->getMedia() as $key => $mediaItem) {
-                    if (count($mediaUrls) >= 1) break;
+                    if (count($mediaUrls) > 1) break;
                     $mediaUrls[] = $mediaItem->getMedia()->getUrl();
                 }
             }
