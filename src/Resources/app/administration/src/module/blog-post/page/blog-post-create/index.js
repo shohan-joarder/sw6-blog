@@ -61,7 +61,7 @@ Component.register('blog-post-create', {
     },
     methods: {
         async loadItem() {
-
+            this.loading = true;
             // Retrieve the item. using the repository and Criteria
             const itemId = this.item.id;
             const criteria = new Criteria();
@@ -80,6 +80,7 @@ Component.register('blog-post-create', {
                 // Extract category_ids from postCategories association
                 this.item.categoryIds = this.item.postCategories.map(category => category.id);
             });
+            this.loading = false;
 
         },
         async onSave() {
