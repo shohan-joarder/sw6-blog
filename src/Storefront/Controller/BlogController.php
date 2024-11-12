@@ -261,9 +261,18 @@ class BlogController extends StorefrontController
             }
             // Process each $tag here
             $getRelatedProduct = $this->getProductsByTag($tag,array_keys($relatedProducts),$context,$appUrl);
-            // Merge the result into the $relatedProducts array
-            $relatedProducts = array_merge($relatedProducts, $getRelatedProduct);
+
+            if(count($getRelatedProduct) > 0){
+
+                foreach ($getRelatedProduct as $key => $relatedItem) {
+                    $relatedProducts[$relatedItem["id"]] = $relatedItem;
+                }
+
+            }
+
         }
+
+        // dd($relatedProducts);
 
         // Get the category IDs associated with the current blog post
         $categoryIds = $blogPost->postCategories->map(function ($category) {
@@ -568,19 +577,34 @@ class BlogController extends StorefrontController
                 $this->logger->info('No SEO URL found for product ID: ' . $product->getId());
             }
 
-            $firstMedia = $product->getMedia()->first();
+            // dd($product->getMedia());
 
-            if ($firstMedia) {
-                $coverPhotoUrl = $firstMedia->getMedia()->getUrl(); // Get the URL of the cover photo
-            } else {
-                // Handle cases where there is no cover photo
-                $coverPhotoUrl = null;
+            // $firstMedia = $product->getMedia()->first();
+
+            // if ($firstMedia) {
+            //     $coverPhotoUrl = $firstMedia->getMedia()->getUrl(); // Get the URL of the cover photo
+            // } else {
+            //     // Handle cases where there is no cover photo
+            //     $coverPhotoUrl = null;
+            // }
+
+            $mediaUrls = [];
+
+            if(count($product->getMedia())>0){      
+                foreach ($product->getMedia() as $key => $mediaItem) {
+                    if(count($mediaUrls) > 1)
+                        continue;
+                    $mediaUrls[] = $mediaItem->media->url;
+                }
             }
 
+            $pathInfoArr = explode("/",$url->pathInfo); 
+
             return [
-                'id' => $product->getId(),
-                'name' => $product->getName(),
-                'media' => $coverPhotoUrl,
+                'p_uid'=>@$pathInfoArr[2],
+                'id' => $product->getDisplayGroup() !== null ?$product->getParentId() : $product->getId(),
+                'name' => $product->getName() !== null ?$product->getName() :$product->translated["name"],
+                'media' => $mediaUrls,
                 'price' => $product->getPrice()->first()->getGross(), // Example for price
                 'url' => $url->seoPathInfo ? $appUrl . $url->seoPathInfo : '', // Get the URL if it exists
             ];

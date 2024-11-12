@@ -75,7 +75,15 @@
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
                                             <a href="{{ product.url }}" class="related_product shadow">
-                                                <img class="product_img p-3" src="{{product.media}}" alt="{{product.name}}">
+                                               <img class="product_img p-3 product_img_primary" 
+                                                    src="{{ product.media[0] is defined ? product.media[0] : 'https://placehold.co/500x500' }}" 
+                                                    alt="{{ product.name }}">
+                                                {% if product.media[1] is defined %}
+                                               <img class="product_img p-3 product_img_secondary" 
+                                                    src="{{product.media[1] }}" 
+                                                    alt="{{ product.name }}">
+                                                {% endif %}
+
                                                 {% if product.name !="" %}
                                                 <h4 class="related_product_title">{{product.name}}</h4>
                                                 {% endif %}
