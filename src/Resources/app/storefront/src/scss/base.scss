@@ -284,9 +284,6 @@ img,svg{
   border: 1px solid $sw-color-brand-primary;
   text-decoration: none;
   background-color: white;
-  @include max-media-width(767) {
-    height: 42px;
-  }
 }
 .blog-card .red_more_btn span {
   color: $sw-color-brand-primary;
@@ -311,7 +308,11 @@ img,svg{
     line-height: 24px;
   }
 }
-
+@media all and (max-width: 767px) {
+  .blog-card .red_more_btn {
+    height: 42px;
+  }
+}
 
 //Blog Details Page
 .blog_details_header_area {
