@@ -463,6 +463,25 @@ img,svg{
 }
 .details_content_wrapper .table_list {
   margin-top: 16px;
+  li{
+    position: relative;
+    list-style: none;
+    &:before{
+      content: "";
+      position: absolute;
+      top: 6px;
+      left: -18px;
+      width: 10px;
+      height: 10px;
+      background: #212121;
+      border-radius: 50%;
+    }
+  }
+  .active_content{
+    &:before{
+      background: $sw-color-brand-primary !important;
+    }
+  }
 }
 .details_content_wrapper .table_list li a {
   display: block;
