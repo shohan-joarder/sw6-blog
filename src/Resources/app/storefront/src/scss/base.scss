@@ -662,3 +662,12 @@ svg {
 .active_content a {
   color: firebrick !important;
 }
+
+
+.product_img_primary {
+  transition: opacity 0.4s ease-in-out;
+}
+
+.product_img_primary.fade-out {
+  opacity: 0;
+}

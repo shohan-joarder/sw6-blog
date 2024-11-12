@@ -167,3 +167,24 @@ searchElements.forEach(element => {
         clearTimeout(typingTimer); // Clear the timer on key down to reset the delay
     });
 });
+
+
+const relatedProducts = document.querySelectorAll(".product_img_primary");
+
+relatedProducts.forEach(item => {
+    item.addEventListener("mouseover", function() {
+      let primaryImage = this.getAttribute("src");
+      let secondaryImage = this.getAttribute("data-src");
+  
+      if (secondaryImage) {
+          // Set the src to the secondary image
+          this.setAttribute("src", secondaryImage);
+      }
+  
+      // Optionally, add an event listener to revert the image on mouseout
+      item.addEventListener("mouseout", function() {
+        this.setAttribute("src", primaryImage);
+      });
+    });
+  });
+  
