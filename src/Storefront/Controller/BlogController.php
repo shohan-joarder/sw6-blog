@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\RangeFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\ContainsFilter;
 
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 
 #[Route(defaults: ['_routeScope' => ['storefront']])]
 class BlogController extends StorefrontController
@@ -256,7 +257,7 @@ class BlogController extends StorefrontController
         $appUrl = $scheme .$shopUrl . $port ."/";
 
         foreach ($blogPost->getTags() as $tag) {
-            if(count($relatedProducts) > 2){
+            if(count($relatedProducts) > 6){
                 continue;
             }
             // Process each $tag here
@@ -264,11 +265,16 @@ class BlogController extends StorefrontController
 
             if(count($getRelatedProduct) > 0){
 
-                foreach ($getRelatedProduct as $key => $relatedItem) {
-                    $relatedProducts[$relatedItem["id"]] = $relatedItem;
-                }
+                $relatedProducts = array_merge($getRelatedProduct,$relatedProducts);
 
             }
+            // if(count($getRelatedProduct) > 0){
+
+            //     foreach ($getRelatedProduct as $key => $relatedItem) {
+            //         $relatedProducts[$relatedItem["id"]] = $relatedItem;
+            //     }
+
+            // }
 
         }
 
@@ -540,73 +546,60 @@ class BlogController extends StorefrontController
 
     private function getProductsByTag(string $tagId, array $existingProductIds,SalesChannelContext $salesChannelContext,$appUrl): array
     {
-        // Retrieve the base Context from SalesChannelContext
         $context = $salesChannelContext->getContext();
 
         $criteria = new Criteria();
         $criteria->addAssociation('tags'); // Load tags association
         $criteria->addAssociation('seoUrls'); // Load SEO URLs association
-        $criteria->addAssociation('media'); // Load SEO URLs association
-        $criteria->addFilter(new RangeFilter('stock', ['gt' => 0])); // "gt" means greater than 
+        $criteria->addAssociation('media'); // Load media association
+        $criteria->addFilter(new RangeFilter('stock', ['gt' => 0])); // Only products with stock greater than 0
         $criteria->addFilter(new EqualsFilter('available', true));
-        $criteria->addFilter(new EqualsFilter('active', true));// Only include available products
+        $criteria->addFilter(new EqualsFilter('active', true)); // Only include active products
         $criteria->addFilter(new EqualsFilter('tags.id', $tagId)); // Filter by tag ID
-        $criteria->setLimit(3); // Limit to 3 products
+
+        // Add filter to include only parent products or one variant (if variants exist)
+        $criteria->addFilter(new MultiFilter(
+            MultiFilter::CONNECTION_OR, [
+                new EqualsFilter('parentId', null), // Parent products
+                new EqualsFilter('displayGroup', 'variant') // Select only one variant if present
+            ]
+        ));
+
+        // $criteria->setLimit(3); // Limit to 3 products
 
         // Use the base Context for the search
         $productEntities = $this->productRepository->search($criteria, $context)->getEntities();
 
-        // Log for debugging
+        // Check if no products were found and return an empty array if so
         if ($productEntities->count() === 0) {
-            // Log that no products were found
             return [];
-            // $this->logger->info('No products found for tag ID: ' . $tagId);
         }
 
-        return $productEntities->map(function (ProductEntity $product) use ($salesChannelContext,$appUrl) {
-            // Get the SEO URLs
+        return $productEntities->map(function (ProductEntity $product) use ($salesChannelContext, $appUrl) {
+            // Get the SEO URLs for the current sales channel
             $seoUrls = $product->getSeoUrls();
-
-            // Filter the SEO URLs for the current sales channel
             $url = $seoUrls->filter(function ($seoUrl) use ($salesChannelContext) {
                 return $seoUrl->getSalesChannelId() === $salesChannelContext->getSalesChannelId();
             })->first();
 
-            // Log for debugging
-            if (!$url) {
-                $this->logger->info('No SEO URL found for product ID: ' . $product->getId());
-            }
-
-            // dd($product->getMedia());
-
-            // $firstMedia = $product->getMedia()->first();
-
-            // if ($firstMedia) {
-            //     $coverPhotoUrl = $firstMedia->getMedia()->getUrl(); // Get the URL of the cover photo
-            // } else {
-            //     // Handle cases where there is no cover photo
-            //     $coverPhotoUrl = null;
-            // }
-
             $mediaUrls = [];
-
-            if(count($product->getMedia())>0){      
+            if ($product->getMedia() && count($product->getMedia()) > 0) {      
                 foreach ($product->getMedia() as $key => $mediaItem) {
-                    if(count($mediaUrls) > 1)
-                        continue;
-                    $mediaUrls[] = $mediaItem->media->url;
+                    if (count($mediaUrls) >= 1) break;
+                    $mediaUrls[] = $mediaItem->getMedia()->getUrl();
                 }
             }
 
-            $pathInfoArr = explode("/",$url->pathInfo); 
+            // Parse the URL path info for unique product identifier
+            $pathInfoArr = $url ? explode("/", $url->getPathInfo()) : [];
 
             return [
-                'p_uid'=>@$pathInfoArr[2],
-                'id' => $product->getDisplayGroup() !== null ?$product->getParentId() : $product->getId(),
-                'name' => $product->getName() !== null ?$product->getName() :$product->translated["name"],
+                'p_uid' => $pathInfoArr[2] ?? null,
+                'id' => $product->getParentId() ?? $product->getId(),
+                'name' => $product->getName() ?? $product->getTranslated()['name'],
                 'media' => $mediaUrls,
                 'price' => $product->getPrice()->first()->getGross(), // Example for price
-                'url' => $url->seoPathInfo ? $appUrl . $url->seoPathInfo : '', // Get the URL if it exists
+                'url' => $url ? $appUrl . $url->getSeoPathInfo() : '', // Get the URL if it exists
             ];
         });
     }
