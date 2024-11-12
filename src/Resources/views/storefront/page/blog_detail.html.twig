@@ -74,8 +74,8 @@
                                     <h3 class="blog_details_title">{{ 'blog-details.title.relatedProductTitle'|trans }}</h3>
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
-                                            <a href="{{ product.url }}" class="related_product shadow">
-                                                <img class="product_img p-3" src="{{product.media}}" alt="{{product.name}}">
+                                            <a href="{{ product.url }}" class="related_product">
+                                                <img class="product_img" src="{{product.media}}" alt="{{product.name}}">
                                                 {% if product.name !="" %}
                                                 <h4 class="related_product_title">{{product.name}}</h4>
                                                 {% endif %}
