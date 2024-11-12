@@ -11,9 +11,7 @@ tableOfContentSelection.forEach(item => {
         });
 
         // Find the anchor tag within the clicked item and get its href attribute
-        // const link = this.querySelector("a");
         // if (link) {
-        //     const hrefValue = link.getAttribute("href");
         //     console.log(hrefValue); // Log the href value
         // }
 
