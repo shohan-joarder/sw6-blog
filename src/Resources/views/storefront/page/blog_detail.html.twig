@@ -74,15 +74,18 @@
                                     <h3 class="blog_details_title">{{ 'blog-details.title.relatedProductTitle'|trans }}</h3>
                                     <div class="related_product_grid">
                                         {% for product in blog.relatedProducts %}
-                                            <a href="{{ product.url }}" class="related_product shadow">
-                                               <img class="product_img p-3 product_img_primary" 
-                                                    src="{{ product.media[0] is defined ? product.media[0] : 'https://placehold.co/500x500' }}" 
-                                                    alt="{{ product.name }}" data-src="{{ product.media[1] is defined ? product.media[1]:"" }}">
-                                              
-                                                {% if product.name !="" %}
-                                                <h4 class="related_product_title">{{product.name}}</h4>
-                                                {% endif %}
-                                            </a>
+                                            <div class="card shadow mb-3">
+                                                <a href="{{ product.url }}" class="position-relative">
+                                                    <img class="product_img product_img_primary" 
+                                                        src="{{ product.media[0] is defined ? product.media[0] : 'https://placehold.co/500x500' }}" 
+                                                        alt="{{ product.name }}" data-src="{{ product.media[1] is defined ? product.media[1]:"" }}" style="height: 325px;">
+                                                
+                                                    {% if product.name !="" %}
+                                                    <h5 class="related_product_title mb-0 position-absolute bottom-0 color-light">{{product.name}}</h5>
+                                                    {% endif %}
+                                                </a>
+                                            </div>
+                                            
                                         {% endfor %}
                                     </div>
                                 </div>
