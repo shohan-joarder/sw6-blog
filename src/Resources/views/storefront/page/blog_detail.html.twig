@@ -2,7 +2,22 @@
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 
 {% block base_content %}
-
+    <script type="application/ld+json">
+        {
+        "@context": "https://schema.org",
+        "@type": "NewsArticle",
+        "headline": "{{ blog.title }}",
+        "image": [
+            "{{blog.postAuthor.media.url}}"
+        ],
+        "datePublished": "{{ blog.publishedAt|date('c') }}",
+        "dateModified": "{{ blog.updatedAt|date('c') }}",
+        "author": [{
+            "@type": "Person",
+            "name": "{{blog.postAuthor.name}}"
+            }]
+        }
+    </script>
     {% block page_header %}
         <div class="blog_details_header_area">
             <div class="inner_area">
