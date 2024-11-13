@@ -2,7 +2,9 @@
     "blog-list": {
         "title": {
             "allBlog": "Alle Blogs",
-            "blogTitle": "Blogkategorien"
+            "blogTitle": "Blogkategorien",
+            "countTitle":"Blog-Anzahl",
+            "searchTitle":"Blog-Suchergebnisse für"
         },
         "button": {
             "readMore": "Weiterlesen"

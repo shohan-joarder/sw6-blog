@@ -1,11 +1,12 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 
-
 {% block base_content %}
+
     {% block page_header %}
         <div class="blog_details_header_area">
             <div class="inner_area">
+                <p class="text-center mb-0"> {{blog.myCategoryNameStr}}</p>
                 <h2>
                     {{ blog.title }}
                 </h2>
@@ -62,9 +63,11 @@
                             {% if ( blog.categories | length >0)%}
                                 <div class="category">
                                     <h3 class="blog_details_title">{{ 'blog-details.title.categoryTitle'|trans }}</h3>
-                                    <div class="category_list d-flex align-items-center flex-wrap gap-2" >
+                                    <div class="category_list d-flex align-items-center flex-wrap gap-2 category-area" >
                                         {% for category in blog.categories %}
-                                            <a type="button"   href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" >{{ category.name }}</a>
+                                            <a type="button"   href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" 
+                                            class="btn {{ category.id in blog.myCategoryIdArr ? 'active_category' : '' }}" 
+                                            >{{ category.name }}</a>
                                         {% endfor %}
                                     </div>
                                 </div>

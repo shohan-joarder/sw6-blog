@@ -68,6 +68,7 @@ class BlogController extends StorefrontController
         $metaKeywards = $this->systemConfigService->get('GdnBlog.config.metaKeywards');
 
         $pageInfo =  $this->genericPageLoader->load($request, $context);
+
         $meta =  $pageInfo->getMetaInformation();
 
         $banner = null;
@@ -199,7 +200,14 @@ class BlogController extends StorefrontController
             'title' => $pageTitle,
             'page' => $pageInfo,
             'blogs' => $blogs,
-            'paginationPages' => $paginationPages,
+            'paginationInfo'=>[
+                "totalItem"=>$totalBlogs,
+                "itemPerPage"=>$itemPerPage,
+                "paginationPages"=>$paginationPages,
+                "page"=>$page,
+                "startCount" => ($page - 1) * $itemPerPage + 1,
+                "endCount" => ($page * $itemPerPage > $totalBlogs) ? $totalBlogs : ($page * $itemPerPage)
+            ],
             'page_info' => [
                 "shortDescription" => $shortDescription,
                 "description" => $description,
@@ -299,6 +307,22 @@ class BlogController extends StorefrontController
         // get categories
         $categories = $this->getCategories($context->getContext());
 
+        $myCategoryNameStr = "";
+        $myCategoryIdArr = [];
+
+        $myCategoreies = $blogPost->postCategories ? array_map(function ($category) {
+            return $category->getName();
+        }, $blogPost->postCategories->getElements()) : [];
+
+        if(count($myCategoreies) > 0){
+
+            $myCategoryIdArr = array_keys($myCategoreies);
+            
+            $myCategoryNameStr = implode( ", ",$myCategoreies);
+
+        }
+
+
         // Prepare the blog details data
         $blogDetails = [
             'id' => $blogPost->getId(),
@@ -322,6 +346,8 @@ class BlogController extends StorefrontController
                 ] : null,
             ],
             'categories' => $categories,
+            "myCategoryNameStr"=>$myCategoryNameStr,
+            "myCategoryIdArr"=>$myCategoryIdArr,
             "relatedProducts"=>$relatedProducts,
             "relatedBlogs"=>$relatedBlogs
         ];

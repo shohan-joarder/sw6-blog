@@ -5,7 +5,7 @@
 
     {% if searchTerm is defined and searchTerm is not null and searchTerm != '' %}
         
-        <h1 class="search-headline text-center mb-4"> Blog search result for  "{{searchTerm}}"</h1>
+        <h1 class="search-headline text-center mb-4">  {{ 'blog-list.title.searchTitle'|trans }}  "{{searchTerm}}"</h1>
     
     {% else %}
 
@@ -17,8 +17,11 @@
         <a href="{{ path('frontend.blog')}}" type="button" class="btn btn-outline-secondary {{ category_slug == null? 'active_category' : '' }}" >{{ 'blog-list.title.allBlog'|trans }}</a>
 
         {% for category in categories %}
+
             <a type="button" class="btn btn-sm btn-outline-secondary {{ category.slug == category_slug ? 'active_category' : '' }}" href="{{ path('frontend.blog', {'category_slug': category.slug}) }}" >{{ category.name }}</a>
+        
         {% endfor %}
+
     </div>
     
     <div class="short_description bg-gray">
@@ -40,37 +43,62 @@
 
     {% endif %}
 
-    <div class="row g-4 mt-5">
+
+    <div class="g-4 mt-5">
         {% if blogs|length > 0  %}
-        {%  sw_include '@GdnGdnblog/storefront/page/inc/pagination.htm.twig' with{
-            paginationPages:paginationPages,
-            searchTerm:searchTerm
-        } %}
-        {% for blog in blogs %}
-        {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
-            blog:blog,
-            thumb:defaultThmb
-        } %}
-        {% endfor %}
-            <div class="mt-5">
+
+            {% if paginationInfo.paginationPages|length > 1 %}
+
                 {%  sw_include '@GdnGdnblog/storefront/page/inc/pagination.htm.twig' with{
-                    paginationPages:paginationPages,
+                    paginationPages:paginationInfo.paginationPages,
+                    searchTerm:searchTerm
                 } %}
+            
+            {% endif %}
+
+            <p class="fw-bold">
+                {{ 'blog-list.title.countTitle'|trans }}:  <span class="active"> {{ paginationInfo.startCount }} to {{ paginationInfo.endCount }} of {{ paginationInfo.totalBlogs }}  {{paginationInfo.totalItem}} items </span>
+            </p>
+            
+            <div class="row">
+
+                {% for blog in blogs %}
+                {%  sw_include '@GdnGdnblog/storefront/page/inc/blog-item.html.twig' with{
+                    blog:blog,
+                    thumb:defaultThmb
+                } %}
+                {% endfor %}
+
             </div>
+
+            {% if paginationInfo.paginationPages|length > 1 %}
+
+                <div class="mt-5">
+                    {%  sw_include '@GdnGdnblog/storefront/page/inc/pagination.htm.twig' with{
+                        paginationPages:paginationInfo.paginationPages,
+                        searchTerm:searchTerm
+                    } %}
+                </div>
+
+            {% endif %}
 
 
         {% else %}
+
             <div class="alert alert-info py-3 text-center text-light">{{ "Unfortunately we can`t find any article"|trans }}</div>
+
         {% endif %}
 
 
     </div>
 
     {% if searchTerm is not defined or searchTerm is null or searchTerm == '' %}
-    <div  id="description" class="bottom_description mt-5">
-        <h5>{{title}}</h5>
-        <p>{{page_info.description}}</p>
-    </div>
+
+        <div  id="description" class="bottom_description mt-5">
+            <h5>{{title}}</h5>
+            <p>{{page_info.description}}</p>
+        </div>
+
     {% endif %}
 
 
