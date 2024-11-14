@@ -371,6 +371,7 @@ svg {
   padding: 31px 16px 36px 16px;
   margin-top: 20px;
   background: #f2f2f2;
+
 }
 @media all and (max-width: 991px) {
   .blog_details_header_area {
@@ -578,6 +579,9 @@ svg {
 .details_content_wrapper .table_list li a:hover {
   opacity: 0.8;
 }
+.blog_details_content_area{
+  overflow-x: hidden;
+}
 .details_content_wrapper .details_right_area {
   position: relative;
 }
@@ -659,7 +663,7 @@ svg {
 @media (min-width: 768px) and (max-width: 991px) {
   .details_content_wrapper .related_product .product_img {
     transition: 0.5s;
-    height: 220px;
+    height: 160px;
   }
 }
 @media all and (max-width: 767px) {
@@ -690,6 +694,11 @@ svg {
   background: black;
   padding: 4px 10px;
   width: 100%;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .details_content_wrapper .related_product h4{
+    bottom: 2px;
+  }
 }
 @media all and (max-width: 767px) {
   .details_content_wrapper .related_product h4 {
@@ -843,11 +852,11 @@ svg {
     height: 30px;
   }
 }
-.social_share_list .share_btn img {
+.social_share_list .share_btn img,.social_share_list .share_btn svg {
   max-width: 24px;
 }
 @media all and (max-width: 991px) {
-  .social_share_list .share_btn img {
+  .social_share_list .share_btn img,.social_share_list .share_btn svg {
     transition: 0.5s;
     max-width: 18px;
   }
