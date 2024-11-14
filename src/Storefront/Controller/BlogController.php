@@ -154,7 +154,6 @@ class BlogController extends StorefrontController
         $totalBlogs = $this->blogRepository->search($criteria, $context->getContext())->getTotal();
         
 
-
         $criteria->setLimit($itemPerPage);
         
         $criteria->setOffset($offset);

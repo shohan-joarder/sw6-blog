@@ -25,35 +25,19 @@
             </div>
 
             <div class="col-10">
-                <sw-grid 
-                    :items="items" 
-                    :showSelection="false"
+
+                <sw-data-grid
+                    :dataSource="items"
                     :columns="columns"
+                    :showSelection="false"
                     >
-                    <!-- Define columns slot -->
-                    <template #columns="{ item }">
-                        <sw-grid-column flex="minmax(200px, 1fr)" label="Title">
-                            <strong>{{ item.title }}</strong>
-                        </sw-grid-column>
 
-                        <sw-grid-column flex="minmax(100px, 1fr)" label="Author">
-                            {{ item.postAuthor.name }}
-                        </sw-grid-column>
-
-                        <sw-grid-column flex="minmax(50px, 1fr)" label="Published">
-                            {{ new Date(item.publishedAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'short', day: '2-digit' }) }}
-                        </sw-grid-column>
-
-                        <!-- Action Column -->
-                        <sw-grid-column label="Actions" flex="100px">
-                            <sw-context-button>
-                                <sw-context-menu-item @click="onEditItem(item)">Edit</sw-context-menu-item>
-                                <sw-context-menu-item @click="postId = item.id; confirmModal = !confirmModal">Delete</sw-context-menu-item>
-                            </sw-context-button>
-                        </sw-grid-column>
+                    <template #actions="{ item }">
+                        <sw-context-menu-item @click="onEditItem(item)">Edit</sw-context-menu-item>
+                        <sw-context-menu-item @click="postId = item.id; confirmModal = !confirmModal">Delete</sw-context-menu-item>
                     </template>
-                </sw-grid>
-            
+                </sw-data-grid>
+
                  <!-- Pagination Controls -->
                 <sw-pagination
                     :currentPage="page"
@@ -61,14 +45,12 @@
                     :limit="limit"
                     @page-change="onPageChange"
                 />
-
+            
             </div>
 
         </div>
 
     </template>
-
-
 
 </sw-page>
 
