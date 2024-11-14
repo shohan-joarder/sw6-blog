@@ -1,7 +1,14 @@
 {% sw_extends '@Storefront/storefront/base.html.twig' %}
 {% set defaultThmb = "https://placehold.co/1000x670" %}
 {% block base_content %}
-
+    {% block layout_breadcrumb_block %}
+        {% set breadcrumbItems = [
+            { 'url': path('frontend.blog'), 'name': 'Blogs'|trans}
+        ] %}
+        {% sw_include "@GdnGdnblog/storefront/page/inc/breadcrumb-custom.html.twig" with {
+            breadcrumbItems: breadcrumbItems
+        } %}
+    {% endblock %}
 
     {% if searchTerm is defined and searchTerm is not null and searchTerm != '' %}
         
