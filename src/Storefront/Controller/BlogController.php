@@ -147,11 +147,11 @@ class BlogController extends StorefrontController
             $criteria->addFilter(new EqualsFilter('postCategories.slug', $category_slug));
         }
 
-        // Fetch total count of matching blogs
-        $totalBlogs = $this->blogRepository->search($criteria, $context->getContext())->getTotal();
-        
         // Add the filter to criteria
         $criteria->addFilter($rangeFilter);
+
+        // Fetch total count of matching blogs
+        $totalBlogs = $this->blogRepository->search($criteria, $context->getContext())->getTotal();
 
         $criteria->setLimit($itemPerPage);
         
