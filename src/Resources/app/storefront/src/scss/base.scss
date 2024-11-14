@@ -17,6 +17,7 @@ svg {
     align-items: center;
     gap: 8px;
     padding: 8px 24px;
+    text-transform: capitalize;
     &.active_category {
       border: 1px solid $sw-color-brand-primary !important;
     }
@@ -40,7 +41,20 @@ svg {
   padding: 10px 0;
   background: #c5c5c5;
 }
-
+.search-headline{
+  color: #212121;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  margin-top: 30px;
+}
+@media all and (max-width: 767px) {
+  .search-headline {
+    transition: 0.5s;
+    font-size: 20px;
+    margin-top: 20px;
+  }
+}
 .centered {
   position: absolute;
   top: 50%;
@@ -58,6 +72,7 @@ svg {
   font-style: normal;
   font-weight: 800;
   line-height: normal;
+  text-transform: capitalize;
 }
 @media (min-width: 992px) and (max-width: 1199px) {
   .banner_content_area h1 {
@@ -219,6 +234,11 @@ svg {
     color: $sw-color-brand-primary;
   }
 }
+@media all and (max-width: 767px) {
+  .blog-card .date_area {
+    gap: 10px 12px;
+  }
+}
 .blog-card .date_area a {
   text-decoration: none;
 }
@@ -248,6 +268,8 @@ svg {
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  height: 48px;
+  margin: 0;
 }
 @media all and (max-width: 767px) {
   .blog-card .content_area h3 {
@@ -266,6 +288,7 @@ svg {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+  height: 72px;
 }
 @media all and (max-width: 767px) {
   .blog-card .content_area p {
@@ -287,6 +310,12 @@ svg {
   text-decoration: none;
   background-color: white;
 }
+@media all and (max-width: 767px) {
+  .blog-card .red_more_btn{
+    height: 42px;
+    padding: 0 12px;
+  }
+}
 .blog-card .red_more_btn span {
   color: $sw-color-brand-primary;
   font-size: 14px;
@@ -301,16 +330,7 @@ svg {
   color: $sw-color-brand-primary;
 }
 
-.bottom_description {
-  margin-bottom: 40px;
-  p {
-    color: #212121;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-  }
-}
+
 
 .blog_count{
   color: #212121;
@@ -338,6 +358,7 @@ svg {
     font-weight: 600;
     line-height: 24px;
     margin: 0;
+    text-transform: capitalize;
   }
   p{
     color: #212121;
@@ -345,8 +366,7 @@ svg {
     font-style: normal;
     font-weight: 400;
     line-height: 24px;
-    margin: 0;
-    margin-top: 9px;
+    margin:9px 0 0 0;
   }
 }
 
@@ -371,6 +391,7 @@ svg {
   padding: 31px 16px 36px 16px;
   margin-top: 20px;
   background: #f2f2f2;
+
 }
 @media all and (max-width: 991px) {
   .blog_details_header_area {
@@ -578,6 +599,9 @@ svg {
 .details_content_wrapper .table_list li a:hover {
   opacity: 0.8;
 }
+.blog_details_content_area{
+  overflow-x: hidden;
+}
 .details_content_wrapper .details_right_area {
   position: relative;
 }
@@ -659,7 +683,7 @@ svg {
 @media (min-width: 768px) and (max-width: 991px) {
   .details_content_wrapper .related_product .product_img {
     transition: 0.5s;
-    height: 220px;
+    height: 160px;
   }
 }
 @media all and (max-width: 767px) {
@@ -690,6 +714,11 @@ svg {
   background: black;
   padding: 4px 10px;
   width: 100%;
+}
+@media (min-width: 768px) and (max-width: 991px) {
+  .details_content_wrapper .related_product h4{
+    bottom: 2px;
+  }
 }
 @media all and (max-width: 767px) {
   .details_content_wrapper .related_product h4 {
@@ -843,11 +872,11 @@ svg {
     height: 30px;
   }
 }
-.social_share_list .share_btn img {
+.social_share_list .share_btn img,.social_share_list .share_btn svg {
   max-width: 24px;
 }
 @media all and (max-width: 991px) {
-  .social_share_list .share_btn img {
+  .social_share_list .share_btn img,.social_share_list .share_btn svg {
     transition: 0.5s;
     max-width: 18px;
   }
