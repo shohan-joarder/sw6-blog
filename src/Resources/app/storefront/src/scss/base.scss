@@ -41,7 +41,20 @@ svg {
   padding: 10px 0;
   background: #c5c5c5;
 }
-
+.search-headline{
+  color: #212121;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 600;
+  margin-top: 30px;
+}
+@media all and (max-width: 767px) {
+  .search-headline {
+    transition: 0.5s;
+    font-size: 20px;
+    margin-top: 20px;
+  }
+}
 .centered {
   position: absolute;
   top: 50%;
@@ -317,16 +330,7 @@ svg {
   color: $sw-color-brand-primary;
 }
 
-.bottom_description {
-  margin-bottom: 40px;
-  p {
-    color: #212121;
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: 24px;
-  }
-}
+
 
 .blog_count{
   color: #212121;
