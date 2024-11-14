@@ -115,6 +115,7 @@ const doneTypingInterval = 500; // Time in milliseconds (1 second)
 
 searchElements.forEach(element => {
     element.addEventListener("keyup", function() {
+       
         clearTimeout(typingTimer);  // Clear the previous timer on each keystroke
         typingTimer = setTimeout(async () => {
             
@@ -135,11 +136,12 @@ searchElements.forEach(element => {
             count > 0 && document.querySelectorAll('.search-suggest-no-result').forEach(element => {
                 element.remove();
             });
+            document.querySelectorAll('.blogResult').forEach(element => element.remove());
             const searchSuggestionContainer = document.querySelector(".search-suggest-container");
             
             if (count > 0 && searchSuggestionContainer) {
                 searchSuggestionContainer.insertAdjacentHTML('beforeend', `
-                    <li class="js-result search-suggest-total">
+                    <li class="js-result search-suggest-total blogResult">
                         <div class="row align-items-center g-0">
                             <div class="col">
                                 <a href="${count > 0 ? sarch_url : "#"}" title="Show all search results" class="search-suggest-total-link">
