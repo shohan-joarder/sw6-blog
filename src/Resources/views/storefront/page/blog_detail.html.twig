@@ -21,7 +21,7 @@
     {% block page_header %}
         <div class="blog_details_header_area">
             <div class="inner_area">
-                <p class="text-center mb-0"> {{blog.myCategoryNameStr}}</p>
+                <p class="blog_header_category"> {{blog.myCategoryNameStr}}</p>
                 <h2>
                     {{ blog.title }}
                 </h2>
@@ -72,6 +72,32 @@
                         <div id="content">
                             {{ blog.description|raw }}
                         </div>
+                        <ul class="social_share_list">
+                            <li>
+                                <h3>{{ 'shareNow'|trans }}</h3>
+                            </li>
+                            <li>
+                                <a href="#" class="share_btn">
+                                    <img src="{{ asset('/storefront/assets/images/icons/social_share_icon1.svg', '@GISLEspadrillesTheme' ) }}" alt="email icon">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="share_btn">
+                                    <img src="{{ asset('/storefront/assets/images/icons/social_share_icon2.svg', '@GISLEspadrillesTheme' ) }}" alt="email icon">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="share_btn">
+                                    <img src="{{ asset('/storefront/assets/images/icons/social_share_icon3.svg', '@GISLEspadrillesTheme' ) }}" alt="email icon">
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="share_btn">
+                                    <img src="{{ asset('/storefront/assets/images/icons/social_share_icon4.svg', '@GISLEspadrillesTheme' ) }}" alt="email icon">
+                                </a>
+                            </li>
+
+                        </ul>
                     </div>
                     <div class="col-md-3">
                         <div class="details_right_area">

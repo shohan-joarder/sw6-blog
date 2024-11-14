@@ -47,18 +47,22 @@
     <div class="g-4 mt-5">
         {% if blogs|length > 0  %}
 
-            {% if paginationInfo.paginationPages|length > 1 %}
+            <div class="blog_count_grid">
+                <p class="blog_count">
+                    {{ 'blog-list.title.countTitle'|trans }}:  <span class="active"> {{ paginationInfo.startCount }} to {{ paginationInfo.endCount }} of {{ paginationInfo.totalBlogs }}  {{paginationInfo.totalItem}} items </span>
+                </p>
+                {% if paginationInfo.paginationPages|length > 1 %}
 
-                {%  sw_include '@GdnGdnblog/storefront/page/inc/pagination.htm.twig' with{
-                    paginationPages:paginationInfo.paginationPages,
-                    searchTerm:searchTerm
-                } %}
-            
-            {% endif %}
+                    {%  sw_include '@GdnGdnblog/storefront/page/inc/pagination.htm.twig' with{
+                        paginationPages:paginationInfo.paginationPages,
+                        searchTerm:searchTerm
+                    } %}
 
-            <p class="fw-bold">
-                {{ 'blog-list.title.countTitle'|trans }}:  <span class="active"> {{ paginationInfo.startCount }} to {{ paginationInfo.endCount }} of {{ paginationInfo.totalBlogs }}  {{paginationInfo.totalItem}} items </span>
-            </p>
+                {% endif %}
+            </div>
+
+
+
             
             <div class="row">
 
@@ -94,7 +98,7 @@
 
     {% if searchTerm is not defined or searchTerm is null or searchTerm == '' %}
 
-        <div  id="description" class="bottom_description mt-5">
+        <div  id="description" class="bottom_description">
             <h5>{{title}}</h5>
             <p>{{page_info.description}}</p>
         </div>
