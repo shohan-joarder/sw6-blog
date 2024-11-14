@@ -132,9 +132,6 @@ class BlogController extends StorefrontController
         if (!empty($searchTerm)) {
             $criteria->addFilter(new ContainsFilter('title', $searchTerm));
         }
-
-        $criteria->setLimit($itemPerPage);
-        $criteria->setOffset($offset);
         
         $criteria->addFilter(new EqualsFilter('active', true));
         // Get the current date
@@ -145,26 +142,23 @@ class BlogController extends StorefrontController
             'lte' => $currentDate // 'lte' means less than or equal to
         ]);
 
-        // Add the filter to criteria
-        $criteria->addFilter($rangeFilter);
-
         // If a category is specified, filter blog posts by the selected category
         if ($category_slug) {
             $criteria->addFilter(new EqualsFilter('postCategories.slug', $category_slug));
         }
 
+        // Fetch total count of matching blogs
+        $totalBlogs = $this->blogRepository->search($criteria, $context->getContext())->getTotal();
+        
+        // Add the filter to criteria
+        $criteria->addFilter($rangeFilter);
+
+        $criteria->setLimit($itemPerPage);
+        
+        $criteria->setOffset($offset);
+
         // Fetch blog entries
         $blogEntities = $this->blogRepository->search($criteria, $context->getContext());
-
-
-        // Create a separate criteria to count total blogs matching the category slug
-        $countCriteria = new Criteria();
-        if ($category_slug) {
-            $countCriteria->addFilter(new EqualsFilter('postCategories.slug', $category_slug));
-        }
-
-        // Fetch total count of matching blogs
-        $totalBlogs = $this->blogRepository->search($countCriteria, $context->getContext())->getTotal();
 
         // Calculate total pages and prepare pagination data
         $totalPages = (int) ceil($totalBlogs / $itemPerPage); // Calculate based on actual total blogs
