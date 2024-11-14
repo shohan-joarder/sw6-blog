@@ -31,6 +31,9 @@ Shopware.Component.register('sw-cms-block-latest-blogs', {
             // Adjust criteria settings as needed to limit or filter the latest blogs
             criteria.addSorting(Criteria.sort('publishedAt', 'DESC'));
 
+            // Set a limit on the number of results (e.g., limit to 10)
+            criteria.setLimit(3);
+
             repository.search(criteria, Shopware.Context.api).then((result) => {
                 // console.log(result);
 
