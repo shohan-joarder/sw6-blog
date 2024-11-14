@@ -1,4 +1,3 @@
-
 const tableOfContentSelection = document.querySelectorAll(".table_content_area > ul > li");
 
 // Iterate over each list item
@@ -185,5 +184,5 @@ relatedProducts.forEach(item => {
         this.setAttribute("src", primaryImage);
       });
     });
-  });
+});
   
