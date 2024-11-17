@@ -656,16 +656,6 @@ svg {
   display: block;
   margin-top: 20px;
 }
-// .related_product h4,
-// .related_product_title {
-//   // padding: 20px 15px !important;
-//   // background-color: rgba(185, 185, 185, 0.5) !important;
-//   // color: #fff;
-//   // width: 100%;
-//   // text-align: center;
-//   // font-weight: bold;
-//   // font-size: 17px;
-// }
 
 .details_content_wrapper .related_product:hover .product_img {
   opacity: 0.8;
@@ -683,13 +673,13 @@ svg {
 @media (min-width: 768px) and (max-width: 991px) {
   .details_content_wrapper .related_product .product_img {
     transition: 0.5s;
-    height: 160px;
+    height: 170px;
   }
 }
 @media all and (max-width: 767px) {
   .details_content_wrapper .related_product .product_img {
     transition: 0.5s;
-    height: 200px;
+    height: 220px;
   }
 }
 .details_content_wrapper .related_product h4 {
