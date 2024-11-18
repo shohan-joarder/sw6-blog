@@ -18,6 +18,17 @@
             }]
         }
     </script>
+    {% block layout_breadcrumb_block %}
+        {% set breadcrumbItems = [
+            { 'url': path('frontend.blog'), 'name': 'Blogs'|trans},
+            { 'url': "#", 'name':  blog.title }
+        ] %}
+        {% sw_include "@GdnGdnblog/storefront/page/inc/breadcrumb-custom.html.twig" with {
+            breadcrumbItems: breadcrumbItems
+        } %}
+    {% endblock %}
+
+
     {% block page_header %}
         <div class="blog_details_header_area">
             <div class="inner_area">
