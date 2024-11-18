@@ -142,6 +142,9 @@ class BlogController extends StorefrontController
             'lte' => $currentDate // 'lte' means less than or equal to
         ]);
 
+        // Add the filter to criteria
+        $criteria->addFilter($rangeFilter);
+
         // If a category is specified, filter blog posts by the selected category
         if ($category_slug) {
             $criteria->addFilter(new EqualsFilter('postCategories.slug', $category_slug));
