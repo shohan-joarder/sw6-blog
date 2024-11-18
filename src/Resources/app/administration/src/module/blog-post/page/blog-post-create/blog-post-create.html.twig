@@ -101,7 +101,25 @@
                 v-model:value="item.description" 
                 :placeholder="'Enter blog description...'"
                 label="Description"
+                :sanitize-input="false"
+                :allow-inline-data-mapping="true"
+                :editor-config="editorConfig"
             />
+
+                <sw-text-editor 
+                v-model:value="item.description" 
+                :label="'Description'"
+                :placeholder="'Enter blog description...'"
+                :sanitize-input="false"
+                :allow-inline-data-mapping="true"
+                :editor-config="editorConfig"
+                />
+                <sw-media-modal-v2 
+                v-if="showMediaModal" 
+                @media-selection-change="onMediaSelection"
+                @modal-close="showMediaModal = false"
+                />
+                <sw-button @click="showMediaModal = true">Add Image</sw-button>
 
             <div class="inputLabel">
                 <h6>Tags</h6>

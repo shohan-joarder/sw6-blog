@@ -11,6 +11,23 @@ const { Criteria } = Shopware.Data;
 
 const httpClient = Application.getContainer('init').httpClient;
 
+
+/* Component.override('sw-text-editor', {
+    computed: {
+        editorConfig() {
+            console.log("loading");
+            const config = this.$super('editorConfig');
+            console.log(config);
+
+            config.plugins = (config.plugins || []).concat(['image', 'link', 'code']);
+            config.toolbar = (config.toolbar || '') + ' | image link code';
+
+            return config;
+        },
+    },
+}); */
+
+
 Component.register('blog-post-create', {
     
     template,
@@ -56,7 +73,9 @@ Component.register('blog-post-create', {
             entity:"gdn_blog_post",
             authors:[],
             categories:[],
-            tags:[]
+            tags:[],
+            editorConfig: this.getEditorConfig(),
+            showMediaModal: false,
         };
     },
     methods: {
@@ -350,6 +369,19 @@ Component.register('blog-post-create', {
 
                 this.item.slug = slug;
         },
+        getEditorConfig() {
+            return {
+              plugins: [
+                'advlist autolink lists link image charmap print preview anchor',
+                'searchreplace visualblocks code fullscreen',
+                'insertdatetime media table paste code help wordcount',
+              ],
+              toolbar: 'undo redo | formatselect | bold italic backcolor | \
+                        alignleft aligncenter alignright alignjustify | \
+                        bullist numlist outdent indent | removeformat | image',
+              image_advtab: true, // Enables the advanced image tab
+            };
+          },
     },
     watch: {
         'item.title': function(newName, oldName) {
@@ -364,7 +396,8 @@ Component.register('blog-post-create', {
         },
         cardTitle() {
             return this.item.id ? 'Update Blog' : 'New Blog';
-        }
+        },
+    
     },
     mounted() {
 
