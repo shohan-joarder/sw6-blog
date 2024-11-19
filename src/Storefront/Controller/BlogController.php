@@ -298,8 +298,11 @@ class BlogController extends StorefrontController
         // Make table of content
         $description = $blogPost->getDescription();
         
+        // [SEMICLONE][COMMA] 
         // Replace all occurrences of '%5BCLONE%5D' with ':'
         $description = str_replace('[CLONE]', ':', $description);
+        $description = str_replace('[SEMICLONE]', ';', $description);
+        $description = str_replace('[COMMA]', ',', $description);
         $description = str_replace('%5BCLONE%5D', ':', $description);
         $description = str_replace('%5BSEMICLONE%5D', ';', $description);
         $description = str_replace('%5BCOMMA%5D', ',', $description);
