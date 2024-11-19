@@ -96,30 +96,7 @@
                 :error="errors.short_description"
             />
 
-            <sw-text-editor
-                sanitize-input
-                v-model:value="item.description" 
-                :placeholder="'Enter blog description...'"
-                label="Description"
-                :sanitize-input="false"
-                :allow-inline-data-mapping="true"
-                :editor-config="editorConfig"
-            />
-
-                <sw-text-editor 
-                v-model:value="item.description" 
-                :label="'Description'"
-                :placeholder="'Enter blog description...'"
-                :sanitize-input="false"
-                :allow-inline-data-mapping="true"
-                :editor-config="editorConfig"
-                />
-                <sw-media-modal-v2 
-                v-if="showMediaModal" 
-                @media-selection-change="onMediaSelection"
-                @modal-close="showMediaModal = false"
-                />
-                <sw-button @click="showMediaModal = true">Add Image</sw-button>
+            <quill-editor name="Description" v-model="item.description" @input="updateDescription"></quill-editor>
 
             <div class="inputLabel">
                 <h6>Tags</h6>
@@ -175,6 +152,7 @@
                 :placeholder="'Enter meta keywords'"
             >
             </sw-textarea-field>
+
 
         </sw-card>
 

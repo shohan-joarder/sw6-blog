@@ -1,5 +1,7 @@
 import template from  "./blog-post-create.html.twig"
 
+import "./../../../component/quill-editor"
+
 import "./blog-post-create.scss"
 
 import deDE from './../../../../snippet/de-DE.json';
@@ -10,23 +12,6 @@ const { Component, Mixin,Context,Application } = Shopware;
 const { Criteria } = Shopware.Data;
 
 const httpClient = Application.getContainer('init').httpClient;
-
-
-/* Component.override('sw-text-editor', {
-    computed: {
-        editorConfig() {
-            console.log("loading");
-            const config = this.$super('editorConfig');
-            console.log(config);
-
-            config.plugins = (config.plugins || []).concat(['image', 'link', 'code']);
-            config.toolbar = (config.toolbar || '') + ' | image link code';
-
-            return config;
-        },
-    },
-}); */
-
 
 Component.register('blog-post-create', {
     
@@ -74,7 +59,6 @@ Component.register('blog-post-create', {
             authors:[],
             categories:[],
             tags:[],
-            editorConfig: this.getEditorConfig(),
             showMediaModal: false,
         };
     },
@@ -98,6 +82,20 @@ Component.register('blog-post-create', {
                 
                 // Extract category_ids from postCategories association
                 this.item.categoryIds = this.item.postCategories.map(category => category.id);
+
+                const revertReplacements = {
+                    '[CLONE]': ':',
+                    '[COMMA]': ',',
+                    '[SEMICLONE]': ';'
+                };
+
+                let desc = result[0].description;
+
+                desc = desc.replace(/%5BCLONE%5D/g,":");
+                desc = desc.replace(/%5BSEMICLONE%5D/g,";");
+                desc = desc.replace(/%5BCOMMA%5D/g,",");
+                this.item.description =  desc;
+                
             });
             this.loading = false;
 
@@ -128,11 +126,17 @@ Component.register('blog-post-create', {
             const isUpdating = !!this.item.id;
             const itemToSave = isUpdating ? await repository.get(this.item.id) : repository.create();
         
+            const replacements = {
+                ':': '[CLONE]',
+                ',': '[COMMA]',
+                ';': '[SEMICLONE]'
+            };
+
             // Set item properties
             itemToSave.title = this.item.title;
             itemToSave.slug = this.item.slug;
-            itemToSave.shortDescription = this.item.shortDescription;
-            itemToSave.description = this.item.description;
+            itemToSave.shortDescription = this.item.shortDescription; 
+            itemToSave.description =  this.item.description.replace(/[:,;]/g, (match) => replacements[match]);//this.item.description;
             itemToSave.active = this.item.active;
             itemToSave.publishedAt = this.item.publishedAt;
             itemToSave.meta_title = this.item.meta_title;
@@ -369,26 +373,23 @@ Component.register('blog-post-create', {
 
                 this.item.slug = slug;
         },
-        getEditorConfig() {
-            return {
-              plugins: [
-                'advlist autolink lists link image charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount',
-              ],
-              toolbar: 'undo redo | formatselect | bold italic backcolor | \
-                        alignleft aligncenter alignright alignjustify | \
-                        bullist numlist outdent indent | removeformat | image',
-              image_advtab: true, // Enables the advanced image tab
-            };
-          },
+       
+        updateDescription(content) {
+            this.item.description = content;
+        },
     },
     watch: {
         'item.title': function(newName, oldName) {
             if (oldName && newName !== oldName) {
                 this.generateSlug();
             }
-        }
+        },
+        // 'item.description': {
+        //     immediate: true,
+        //     handler(newValue) {
+        //         console.log('Description updated:', newValue);
+        //     }
+        // }
     },
     computed: {
         itemRepository() {
