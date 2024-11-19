@@ -136,7 +136,13 @@ Component.register('blog-post-create', {
             itemToSave.title = this.item.title;
             itemToSave.slug = this.item.slug;
             itemToSave.shortDescription = this.item.shortDescription; 
-            itemToSave.description =  this.item.description.replace(/[:,;]/g, (match) => replacements[match]);//this.item.description;
+            itemToSave.description =  this.item.description.replace(
+                /src="([^"]*)"/g, // Matches the src="..." pattern
+                (match, group) => {
+                    const replacedValue = group.replace(/[:,;]/g, (innerMatch) => replacements[innerMatch]);
+                    return `src="${replacedValue}"`; // Replace only the src content
+                }
+            );//this.item.description.replace(/[:,;]/g, (match) => replacements[match]);//this.item.description;
             itemToSave.active = this.item.active;
             itemToSave.publishedAt = this.item.publishedAt;
             itemToSave.meta_title = this.item.meta_title;
