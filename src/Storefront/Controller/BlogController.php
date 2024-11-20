@@ -444,6 +444,14 @@ class BlogController extends StorefrontController
 
         // Create criteria for searching blog posts
         $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('active', true));
+        // Get the current date
+        $currentDate = (new \DateTime())->format('Y-m-d H:i:s');
+
+        // Create a range filter for publishedAt
+        $rangeFilter = new RangeFilter('publishedAt', [
+            'lte' => $currentDate // 'lte' means less than or equal to
+        ]);
         $criteria->addFilter(new ContainsFilter('title', $searchTerm));
 
         // Search for matching blog posts
