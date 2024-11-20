@@ -51,7 +51,9 @@ class GdnBlogPostDefinition extends EntityDefinition
             (new StringField('slug', 'slug')),
             (new DateTimeField('published_at', 'publishedAt')),
             (new LongTextField('short_description', 'shortDescription')),
-            (new LongTextField('description', 'description'))->addFlags(new AllowHtml()),
+            (new LongTextField('description', 'description',[
+                'allowHtml' => true, // Custom handling in backend
+            ]))->addFlags(new AllowHtml()),
             (new BoolField('active', 'active')),
             (new StringField('meta_title', 'meta_title')),
             (new LongTextField('meta_description', 'meta_description')),

@@ -94,7 +94,7 @@ Component.register('quill-editor', {
                         ['blockquote'],
                         // , 'code-block'
                         // Links, Images, Videos
-                        ['link', 'image'],
+                        ['link', 'image','video'],
                     
                         // Clear formatting
                         ['clean'] // remove formatting button

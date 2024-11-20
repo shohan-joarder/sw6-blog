@@ -90,10 +90,17 @@ Component.register('blog-post-create', {
                 };
 
                 let desc = result[0].description;
+                
+                desc = desc
+                        .replace(/\[iframe\]/g, '<iframe') // Replace [iframe] with <iframe
+                        .replace(/&gt;\[\/iframe\]/g, '></iframe>')// Replace [/iframe] with </iframe>
+                        .replace(/\[CLONE\]/g, ':'); // Replace [CLONE] with :
+            
+                desc = desc
+                        .replace(/%5BCLONE%5D/g,":")
+                        .replace(/%5BSEMICLONE%5D/g,";")
+                        .replace(/%5BCOMMA%5D/g,",");
 
-                desc = desc.replace(/%5BCLONE%5D/g,":");
-                desc = desc.replace(/%5BSEMICLONE%5D/g,";");
-                desc = desc.replace(/%5BCOMMA%5D/g,",");
                 this.item.description =  desc;
                 
             });
@@ -132,6 +139,10 @@ Component.register('blog-post-create', {
                 ';': '[SEMICLONE]'
             };
 
+            this.item.description = this.item.description
+                                    .replace(/<iframe/g, '[iframe]')
+                                    .replace(/<\/iframe>/g, '[/iframe]');
+
             // Set item properties
             itemToSave.title = this.item.title;
             itemToSave.slug = this.item.slug;
@@ -142,7 +153,7 @@ Component.register('blog-post-create', {
                     const replacedValue = group.replace(/[:,;]/g, (innerMatch) => replacements[innerMatch]);
                     return `src="${replacedValue}"`; // Replace only the src content
                 }
-            );//this.item.description.replace(/[:,;]/g, (match) => replacements[match]);//this.item.description;
+            );
             itemToSave.active = this.item.active;
             itemToSave.publishedAt = this.item.publishedAt;
             itemToSave.meta_title = this.item.meta_title;
@@ -161,7 +172,7 @@ Component.register('blog-post-create', {
                 itemToSave.tags_name = []; // Set to empty array if tags are undefined
             }
             
-        
+            // return
             try {
                 if (isUpdating) {
                     // Update existing item
@@ -389,13 +400,7 @@ Component.register('blog-post-create', {
             if (oldName && newName !== oldName) {
                 this.generateSlug();
             }
-        },
-        // 'item.description': {
-        //     immediate: true,
-        //     handler(newValue) {
-        //         console.log('Description updated:', newValue);
-        //     }
-        // }
+        }
     },
     computed: {
         itemRepository() {
